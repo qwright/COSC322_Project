@@ -16,10 +16,14 @@ public class Agent extends GamePlayer{
 	private GameClient gameClient = null;
 	private String username = null;
 	private String password = null;
+	String ourAmazon;
+	String otherAmazon;
+	
 	
 	public Agent(String username, String password) {
 		this.username = username;
 		this.password = password;
+		gameClient = new GameClient(userName(), password, this);
 	
 	}
 	
@@ -29,8 +33,8 @@ public class Agent extends GamePlayer{
 	@Override
 	public void onLogin() {
 		// TODO Auto-generated method stub
-		username = gameClient.getUserName();
-		this.gameClient.joinRoom("Okanagan Lake");
+	
+		this.gameClient.joinRoom("Kootenay Lake");
 		
 	}
 	
@@ -46,28 +50,42 @@ public class Agent extends GamePlayer{
 	
     	//For a detailed description of the message types and format, 
     	//see the method GamePlayer.handleGameMessage() in the game-client-api document.
-		List currentPOS = null;
+				
     	    	switch(messageType) {
     	    	case GameMessage.GAME_ACTION_START:
-    	    		if((msgDetails.get(AmazonsGameMessage.PLAYER_WHITE).equals(this.username))){
+    	    		System.out.println(this.userName());
+    	    		if((msgDetails.get(AmazonsGameMessage.PLAYER_WHITE)).equals(this.userName())){
     	    			System.out.println("The AI is white");
     	    			
     	    		} else {
     	    			System.out.println("The AI is black");
     	    		}
+    	    		
+    	    		break;
 //    	    		
 //    	    		String black = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
 //    	    		System.out.println(black);
     	    	case GameMessage.GAME_STATE_BOARD:
-    	    	
-    	    		
+    	    		System.out.println("were here "+ msgDetails.get(AmazonsGameMessage.GAME_STATE));
+    	    		GameRules game = new GameRules((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
     	    		break;
     	    	case GameMessage.GAME_ACTION_MOVE:
+    	    		
+    	    		
     	    		ArrayList<Integer> qcur = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
     	    		ArrayList<Integer> qnext = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
     	    		ArrayList<Integer> apos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
-    	    		
+    	    		qcur.set(0, 10);
+    	    		qcur.set(1, 7);
+    	    		qnext.set(0, 9);
+    	    		qnext.set(1, 2);
+    	    		apos.set(0, 3);
+    	    		apos.set(1, 3);
+    	    		System.out.println(msgDetails.get(AmazonsGameMessage.GAME_STATE_JOIN));
+    	    		System.out.println(msgDetails.get(AmazonsGameMessage.PLAYER_WHITE));
+    	    		System.out.println(this.userName());
     	    		gameClient.sendMoveMessage(qcur, qnext, apos);
+    	    	
     	    		break;
     	    	}
     	return true; 
@@ -96,7 +114,7 @@ public class Agent extends GamePlayer{
 	@Override
 	public void connect() {
 		// TODO Auto-generated method stub
-		gameClient = new GameClient(username, password, this);
+		gameClient = new GameClient(userName(), password, this);
 	}
 
 }

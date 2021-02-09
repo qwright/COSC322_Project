@@ -85,6 +85,7 @@ public class COSC322Test extends GamePlayer{
     	userName = gameClient.getUserName();
     	if(gamegui != null) {
     	gamegui.setRoomInformation(gameClient.getRoomList());
+    	
     	}
     	
 //    	List<Room> rooms = gameClient.getRoomList();
@@ -101,20 +102,7 @@ public class COSC322Test extends GamePlayer{
 	
     	//For a detailed description of the message types and format, 
     	//see the method GamePlayer.handleGameMessage() in the game-client-api document. 
-    	    	switch(messageType) {
-    	    	case GameMessage.GAME_ACTION_START:
-    	    		System.out.println("Game State: " + msgDetails.get("player-white"));
-    	    		
-    	    		String black = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
-    	    		System.out.println(black);
-    	    	case GameMessage.GAME_STATE_BOARD:
-    	    		gamegui.setGameState((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
-    	    		break;
-    	    	case GameMessage.GAME_ACTION_MOVE:
-    	    		//System.out.println("you are here" + msgDetails);
-    	    		gamegui.updateGameState(msgDetails);
-    	    		break;
-    	    	}
+    	
     	return true;   	
     }
     
@@ -139,7 +127,7 @@ public class COSC322Test extends GamePlayer{
 	@Override
 	public void connect() {
 		// TODO Auto-generated method stub
-    	gameClient = new GameClient(userName, passwd, this);			
+    	gameClient = new GameClient(userName(), passwd, this);			
 	}
 
  
