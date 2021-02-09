@@ -20,6 +20,11 @@ import ygraph.ai.smartfox.games.amazons.HumanPlayer;
  * Jan 5, 2021
  *
  */
+
+/*
+ * 
+ * 
+ * */
 public class COSC322Test extends GamePlayer{
 
     private GameClient gameClient = null; 
