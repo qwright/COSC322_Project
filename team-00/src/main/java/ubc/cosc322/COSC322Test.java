@@ -41,6 +41,9 @@ public class COSC322Test extends GamePlayer{
     public static void main(String[] args) {				 
     	//COSC322Test player = new COSC322Test(args[0], args[1]);
     	HumanPlayer player = new HumanPlayer();
+    	Agent agent = new Agent("test","123");
+    	
+    	agent.Go();
     	if(player.getGameGUI() == null) {
     		player.Go();
     	}
@@ -82,6 +85,7 @@ public class COSC322Test extends GamePlayer{
     	userName = gameClient.getUserName();
     	if(gamegui != null) {
     	gamegui.setRoomInformation(gameClient.getRoomList());
+    	
     	}
     	
 //    	List<Room> rooms = gameClient.getRoomList();
@@ -90,22 +94,15 @@ public class COSC322Test extends GamePlayer{
 //    	
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public boolean handleGameMessage(String messageType, Map<String, Object> msgDetails) {
     	//This method will be called by the GameClient when it receives a game-related message
     	//from the server.
 	
     	//For a detailed description of the message types and format, 
     	//see the method GamePlayer.handleGameMessage() in the game-client-api document. 
-    	    	switch(messageType) {
-    	    	case GameMessage.GAME_STATE_BOARD:
-    	    		gamegui.setGameState((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
-    	    		break;
-    	    	case GameMessage.GAME_ACTION_MOVE:
-    	    		System.out.println("you are here" + msgDetails);
-    	    		gamegui.updateGameState(msgDetails);
-    	    		break;
-    	    	}
+    	
     	return true;   	
     }
     
@@ -130,7 +127,7 @@ public class COSC322Test extends GamePlayer{
 	@Override
 	public void connect() {
 		// TODO Auto-generated method stub
-    	gameClient = new GameClient(userName, passwd, this);			
+    	gameClient = new GameClient(userName(), passwd, this);			
 	}
 
  
