@@ -16,6 +16,7 @@ public class Agent extends GamePlayer{
 	private GameClient gameClient = null;
 	private String username = null;
 	private String password = null;
+	private GameRules game = null;
 	String ourAmazon;
 	String otherAmazon;
 	
@@ -67,24 +68,25 @@ public class Agent extends GamePlayer{
 //    	    		System.out.println(black);
     	    	case GameMessage.GAME_STATE_BOARD:
     	    		System.out.println("were here "+ msgDetails.get(AmazonsGameMessage.GAME_STATE));
-    	    		GameRules game = new GameRules((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
+    	    		game = new GameRules((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
     	    		break;
     	    	case GameMessage.GAME_ACTION_MOVE:
     	    		
     	    		
-    	    		ArrayList<Integer> qcur = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
-    	    		ArrayList<Integer> qnext = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
-    	    		ArrayList<Integer> apos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
-    	    		qcur.set(0, 10);
-    	    		qcur.set(1, 7);
-    	    		qnext.set(0, 9);
-    	    		qnext.set(1, 2);
-    	    		apos.set(0, 3);
-    	    		apos.set(1, 3);
-    	    		System.out.println(msgDetails.get(AmazonsGameMessage.GAME_STATE_JOIN));
-    	    		System.out.println(msgDetails.get(AmazonsGameMessage.PLAYER_WHITE));
-    	    		System.out.println(this.userName());
-    	    		gameClient.sendMoveMessage(qcur, qnext, apos);
+//    	    		ArrayList<Integer> qcur = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
+//    	    		ArrayList<Integer> qnext = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
+//    	    		ArrayList<Integer> apos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
+//    	    		qcur.set(0, 10);
+//    	    		qcur.set(1, 7);
+//    	    		qnext.set(0, 9);
+//    	    		qnext.set(1, 2);
+//    	    		apos.set(0, 3);
+//    	    		apos.set(1, 3);
+    	    		
+    	    		ArrayList<Integer> qcur =GameRules.findCurrent();
+    	    		ArrayList<Integer> qnext =GameRules.makeMove();
+    	    		
+    	    		gameClient.sendMoveMessage(qcur, qnext, qcur);
     	    	
     	    		break;
     	    	}
