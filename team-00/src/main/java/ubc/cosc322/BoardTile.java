@@ -19,9 +19,9 @@ public class BoardTile {
 		return hasQueen;
 	}
 
-	public void setQueen(Queen q, boolean hasQueen) {
+	public void setQueen(Queen q) {
 		this.queen = q;
-		this.hasQueen = hasQueen;
+		this.hasQueen = true;
 	}
 
 	public boolean containsArrow() {

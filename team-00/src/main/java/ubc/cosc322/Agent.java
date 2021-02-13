@@ -58,9 +58,10 @@ public class Agent extends GamePlayer{
     	    		System.out.println(this.userName());
     	    		if((msgDetails.get(AmazonsGameMessage.PLAYER_WHITE)).equals(this.userName())){
     	    			System.out.println("The AI is white");
-    	    			
+    	    			board.setAIColor(true);
     	    		} else {
     	    			System.out.println("The AI is black");
+    	    			board.setAIColor(false);
     	    		}
     	    		
     	    		break;
@@ -73,25 +74,25 @@ public class Agent extends GamePlayer{
     	    		board = new GameBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
     	    		break;
     	    	case GameMessage.GAME_ACTION_MOVE:
+    	    		board.updateBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR), (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
-    	    		
-    	    		ArrayList<Integer> q_orig = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
-    	    		System.out.println("QueenStart: " + q_orig.get(0) + ", " + q_orig.get(1));
-    	    		ArrayList<Integer> q_next = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
-    	    		System.out.println("QMoved: " + q_next.get(0) + ", " + q_next.get(1));
-    	    		ArrayList<Integer> a_pos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
-    	    		System.out.println("ArrowAt: " + a_pos.get(0) + ", " + a_pos.get(1));
+    	    		//ArrayList<Integer> q_orig = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
+    	    		//System.out.println("QueenStart: " + q_orig.get(0) + ", " + q_orig.get(1));
+    	    		//ArrayList<Integer> q_next = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
+    	    		//System.out.println("QMoved: " + q_next.get(0) + ", " + q_next.get(1));
+    	    		//ArrayList<Integer> a_pos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
+    	    		//System.out.println("ArrowAt: " + a_pos.get(0) + ", " + a_pos.get(1));
 //    	    		qcur.set(0, 10);
 //    	    		qcur.set(1, 7);
 //    	    		qnext.set(0, 9);
 //    	    		qnext.set(1, 2);
 //    	    		apos.set(0, 3);
 //    	    		apos.set(1, 3);
+    	    		//TODO implement this logic with new classes
+    	    		//ArrayList<Integer> qcur =GameRules.findCurrent();
+    	    		//ArrayList<Integer> qnext =GameRules.makeMove();
     	    		
-    	    		ArrayList<Integer> qcur =GameRules.findCurrent();
-    	    		ArrayList<Integer> qnext =GameRules.makeMove();
-    	    		
-    	    		gameClient.sendMoveMessage(qcur, qnext, qcur);
+    	    		//gameClient.sendMoveMessage(qcur, qnext, qcur);
     	    	
     	    		break;
     	    	}

@@ -15,6 +15,8 @@ public class GameBoard {
 	//queen id and index-1 in list are identical
 	List<Queen> wQueens = new ArrayList<Queen>();
 	List<Queen> bQueens = new ArrayList<Queen>();
+	//set AI team
+	boolean AI_isWhite;
 	
 	public GameBoard(ArrayList<Integer> state)
 	{
@@ -48,14 +50,14 @@ public class GameBoard {
 				nBQueens++;
 				Queen q = new Queen(nBQueens, false, qPos);
 				bQueens.add(q);
-				board[row][column].setQueen(q,true);
+				board[row][column].setQueen(q);
 			}
 			//set queen white
 			if(state.get(i) == 2 && nWQueens < nMaxWQueens) {
 				nWQueens++;
 				Queen q = new Queen(nBQueens, true, qPos);
 				bQueens.add(q);
-				board[row][column].setQueen(q,true);
+				board[row][column].setQueen(q);
 			}
 			column++;
 			counter ++;
@@ -63,12 +65,25 @@ public class GameBoard {
 		System.out.println("Board initialized");
 		printBoard();
 	}
+	
+	public void setAIColor(boolean isWhite) {
+		this.AI_isWhite = isWhite;
+	}
 	/*
-	 * Update the board. Looks for opposing players move (one arrow and one queen move)
+	 * Update the board for any movement. start, end, and arrow
 	 */
-	public void updateBoard(ArrayList<Integer> state, boolean isWhite)
+	public void updateBoard(ArrayList<Integer> orig, ArrayList<Integer> move, ArrayList<Integer> arrow)
 	{
-		List <int[]> updatedQPos = new ArrayList<int[]>();
+		BoardTile start = board[orig.get(0)-1][orig.get(1)-1];
+		BoardTile end = board[move.get(0)-1][move.get(1)-1];
+		
+		Queen q = start.getQueen();
+		start.removeQueen();
+		end.setQueen(q);
+		board[arrow.get(0)-1][arrow.get(1)-1].setArrow(true);
+		/*This is why planning is important
+		 * 
+		 * List <int[]> updatedQPos = new ArrayList<int[]>();
 		//loop through state once and update arrow position, get queen coordinates
 		for(int row=0; row<nRows; row++) {
 			for(int col=0; col<nCols; col++) {
@@ -80,13 +95,13 @@ public class GameBoard {
 				if(state.get(row*10 + col) == 3 && !currTile.containsArrow()){
 					currTile.setArrow(true); 
 				}
-				if(state.get(row*10+col) == 2 && isWhite) {
+				if(state.get(row*10+col) == 2 && AI_isWhite) {
 					int[] pos = new int[2];
 					pos[0] = row;
 					pos[1] = col;
 					updatedQPos.add(pos);
 				}
-				else if(state.get(row*10+col) == 1 && !isWhite) {
+				else if(state.get(row*10+col) == 1 && !AI_isWhite) {
 					int[] pos = new int[2];
 					pos[0] = row;
 					pos[1] = col;
@@ -118,6 +133,8 @@ public class GameBoard {
 		board[moved.getCurrentPos()[0]][moved.getCurrentPos()[1]].removeQueen();
 		moved.setPos(updatedQPos.get(0));
 		board[updatedQPos.get(0)[0]][updatedQPos.get(0)[1]].setQueen(moved, true);
+     	*/
+		printBoard();
 	}
 	
 	private void printBoard() {
