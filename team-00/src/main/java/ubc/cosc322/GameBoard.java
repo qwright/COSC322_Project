@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameBoard {
-	
-	BoardTile[][] board;
+
 	int nRows = 10;
 	int nCols = 10;
 	int nMaxWQueens = 4;
 	int nMaxBQueens = 4;
+	
+	BoardTile[][] board = new BoardTile[nRows][nCols];
 	
 	//queen id and index-1 in list are identical
 	List<Queen> wQueens = new ArrayList<Queen>();
@@ -52,13 +53,15 @@ public class GameBoard {
 			//set queen white
 			if(state.get(i) == 2 && nWQueens < nMaxWQueens) {
 				nWQueens++;
-				Queen q = new Queen(nBQueens, false, qPos);
+				Queen q = new Queen(nBQueens, true, qPos);
 				bQueens.add(q);
 				board[row][column].setQueen(q,true);
 			}
 			column++;
 			counter ++;
 		}
+		System.out.println("Board initialized");
+		printBoard();
 	}
 	/*
 	 * Update the board. Looks for opposing players move (one arrow and one queen move)
@@ -97,7 +100,7 @@ public class GameBoard {
 		Queen moved = null;
 		//find queen that has moved
 		for(Queen q:wQueens) {
-			if(!updatedQPos.contains(q.currentPos)) {
+			if(!updatedQPos.contains(q.currentPos)) { 
 				moved = q;
 				break;
 			}
@@ -119,5 +122,25 @@ public class GameBoard {
 	
 	private void printBoard() {
 		//implement if wanted once we know what arrow is represented as from server
+		BoardTile t = null;
+		for(int row=0; row<board[0].length; row++) {
+			for(int col=0; col<board[1].length; col++) {
+				t = board[row][col];
+				if(t.containsQueen()) {
+					if(t.getQueen().isWhite) {
+						System.out.print("2");
+					}else {
+						System.out.print("1");
+					}
+				}
+				else if(t.containsArrow()) {
+					System.out.print("X");
+				}else {
+					System.out.print("0");
+				}
+				System.out.print(" ");
+			}
+			System.out.println();
+		}
 	}
 }

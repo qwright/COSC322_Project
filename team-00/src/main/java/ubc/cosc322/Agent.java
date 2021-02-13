@@ -17,6 +17,7 @@ public class Agent extends GamePlayer{
 	private String username = null;
 	private String password = null;
 	private GameRules game = null;
+	private GameBoard board = null;
 	String ourAmazon;
 	String otherAmazon;
 	
@@ -67,15 +68,19 @@ public class Agent extends GamePlayer{
 //    	    		String black = (String) msgDetails.get(AmazonsGameMessage.PLAYER_BLACK);
 //    	    		System.out.println(black);
     	    	case GameMessage.GAME_STATE_BOARD:
-    	    		System.out.println("were here "+ msgDetails.get(AmazonsGameMessage.GAME_STATE));
-    	    		game = new GameRules((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
+    	    		//System.out.println("were here "+ msgDetails.get(AmazonsGameMessage.GAME_STATE));
+    	    		//game = new GameRules((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
+    	    		board = new GameBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
     	    		break;
     	    	case GameMessage.GAME_ACTION_MOVE:
     	    		
     	    		
-//    	    		ArrayList<Integer> qcur = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
-//    	    		ArrayList<Integer> qnext = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
-//    	    		ArrayList<Integer> apos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
+    	    		ArrayList<Integer> q_orig = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
+    	    		System.out.println("QueenStart: " + q_orig.get(0) + ", " + q_orig.get(1));
+    	    		ArrayList<Integer> q_next = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT);
+    	    		System.out.println("QMoved: " + q_next.get(0) + ", " + q_next.get(1));
+    	    		ArrayList<Integer> a_pos = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS);
+    	    		System.out.println("ArrowAt: " + a_pos.get(0) + ", " + a_pos.get(1));
 //    	    		qcur.set(0, 10);
 //    	    		qcur.set(1, 7);
 //    	    		qnext.set(0, 9);
