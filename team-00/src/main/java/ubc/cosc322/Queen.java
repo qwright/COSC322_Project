@@ -16,6 +16,21 @@ public class Queen {
 		this.isWhite = isWhite;
 		this.currentPos = new ArrayList<>(Arrays.asList(start_pos[0],start_pos[1]));
 	}
+	public int getId() {
+		return id;
+	}
+	
+	public ArrayList<Integer> getCurrentPos()
+	{
+		ArrayList<Integer> boardAdjusted = new ArrayList<Integer>(
+				Arrays.asList(currentPos.get(0),currentPos.get(1)));
+		return boardAdjusted;
+	}
+	
+	public void setPos(ArrayList<Integer> pos) {
+		this.currentPos.set(0,pos.get(0));
+		this.currentPos.set(1,pos.get(1));
+	}
 	
 	//returns a list of current tiles that the queen may move to given the current board state
 	//Possible moves are calculated from queens current position and if there is a queen or arrow in the path
@@ -28,56 +43,56 @@ public class Queen {
 		int colPos = currentPos.get(1);
 		
 		//Horizontal -right from current
-		for(int i=colPos; i < 10; i++) {
+		for(int i=colPos; i < 11; i++) {
 			if(i==colPos) {
 				continue;
 			}
 			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
 				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(rowPos+1);
-				tile.add(i+1);
+				tile.add(rowPos);
+				tile.add(i);
 				moves.add(tile);
 			}else {
 				break;
 			}
 		}
 		//Horizontal -left from current
-		for(int i=colPos; i > -1; i--) {
+		for(int i=colPos; i > 0; i--) {
 			if(i==colPos) {
 				continue;
 			}
 			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
 				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(rowPos+1);
-				tile.add(i+1);
+				tile.add(rowPos);
+				tile.add(i);
 				moves.add(tile);
 			}else {
 				break;
 			}
 		}
 		//Vertical- up from current;
-		for(int i=rowPos; i < 10; i++) {
+		for(int i=rowPos; i < 11; i++) {
 			if(i==rowPos) {
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
 				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(i+1);
-				tile.add(colPos+1);
+				tile.add(i);
+				tile.add(colPos);
 				moves.add(tile);
 			}else {
 				break;
 			}
 		}
 		//Vertical- down from current;
-		for(int i=rowPos; i > -1; i--) {
+		for(int i=rowPos; i > 0; i--) {
 			if(i==rowPos) {
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
 				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(i+1);
-				tile.add(colPos+1);
+				tile.add(i);
+				tile.add(colPos);
 				moves.add(tile);
 			}else {
 				break;
@@ -90,15 +105,15 @@ public class Queen {
 		//columns will max out first
 		if(9-rowPos>9-colPos) {
 			int tempRow = rowPos;
-			for(int i=colPos; i < 10; i++) {
+			for(int i=colPos; i < 11; i++) {
 				if(i==colPos) {
 					tempRow++;
 					continue;
 				}
 				if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
 					ArrayList<Integer> tile = new ArrayList<Integer>();
-					tile.add(tempRow+1);
-					tile.add(i+1);
+					tile.add(tempRow);
+					tile.add(i);
 					moves.add(tile);
 				}else {
 					break;
@@ -108,7 +123,7 @@ public class Queen {
 		//rows and columns have same amount of room left or columns have more
 		}else {
 			int tempCol = colPos;
-			for(int i=rowPos; i < 10; i++) {
+			for(int i=rowPos; i < 11; i++) {
 				if(i==rowPos) {
 					tempCol++;
 					continue;
@@ -116,7 +131,7 @@ public class Queen {
 				if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
 					ArrayList<Integer> tile = new ArrayList<Integer>();
 					tile.add(i+1);
-					tile.add(tempCol+1);
+					tile.add(tempCol);
 					moves.add(tile);
 				}else {
 					break;
@@ -130,15 +145,15 @@ public class Queen {
 			if(rowPos>colPos) {
 				//column is at lower index then row so will go out of bounds first
 				int tempRow = rowPos;
-				for(int i=colPos; i > -1; i--) {
+				for(int i=colPos; i > 0; i--) {
 					if(i==colPos) {
 						tempRow--;
 						continue;
 					}
 					if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
 						ArrayList<Integer> tile = new ArrayList<Integer>();
-						tile.add(tempRow+1);
-						tile.add(i+1);
+						tile.add(tempRow);
+						tile.add(i);
 						moves.add(tile);
 					}else {
 						break;
@@ -148,15 +163,15 @@ public class Queen {
 			//rowPos is same index as colPos or smaller so it will max out first
 			}else {
 				int tempCol = colPos;
-				for(int i=rowPos; i > -1; i--) {
+				for(int i=rowPos; i > 0; i--) {
 					if(i==rowPos) {
 						tempCol--;
 						continue;
 					}
 					if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
 						ArrayList<Integer> tile = new ArrayList<Integer>();
-						tile.add(i+1);
-						tile.add(tempCol+1);
+						tile.add(i);
+						tile.add(tempCol);
 						moves.add(tile);
 					}else {
 						break;
@@ -170,15 +185,15 @@ public class Queen {
 				if(9-rowPos>colPos) {
 					//row has more moves so col will max out first
 					int tempRow = rowPos;
-					for(int i=colPos; i >-1 ; i--) {
+					for(int i=colPos; i >0 ; i--) {
 						if(i==colPos) {
 							tempRow++;
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
 							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(tempRow+1);
-							tile.add(i+1);
+							tile.add(tempRow);
+							tile.add(i);
 							moves.add(tile);
 						}else {
 							break;
@@ -188,15 +203,15 @@ public class Queen {
 				//rowPos will max out first
 				}else {
 					int tempCol = colPos;
-					for(int i=rowPos; i < -1; i--) {
+					for(int i=rowPos; i > 0; i--) {
 						if(i==colPos) {
 							tempCol++;
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
 							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(i+1);
-							tile.add(tempCol+1);
+							tile.add(i);
+							tile.add(tempCol);
 							moves.add(tile);
 						}else {
 							break;
@@ -209,15 +224,15 @@ public class Queen {
 				if(rowPos>9-colPos) {
 					//row is higher index so col will max out first
 					int tempRow = rowPos;
-					for(int i=colPos; i <10 ; i++) {
+					for(int i=colPos; i <11 ; i++) {
 						if(i==colPos) {
 							tempRow--;
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
 							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(tempRow+1);
-							tile.add(i+1);
+							tile.add(tempRow);
+							tile.add(i);
 							moves.add(tile);
 						}else {
 							break;
@@ -227,15 +242,15 @@ public class Queen {
 				//rowPos will max out first
 				}else {
 					int tempCol = colPos;
-					for(int i=rowPos; i > -1; i--) {
+					for(int i=rowPos; i > 0; i--) {
 						if(i==rowPos) {
 							tempCol++;
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
 							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(i+1);
-							tile.add(tempCol+1);
+							tile.add(i);
+							tile.add(tempCol);
 							moves.add(tile);
 						}else {
 							break;
@@ -247,19 +262,5 @@ public class Queen {
 		return moves;
 	}
 	
-	public int getId() {
-		return id;
-	}
-	
-	public ArrayList<Integer> getCurrentPos()
-	{
-		ArrayList<Integer> boardAdjusted = new ArrayList<Integer>(
-				Arrays.asList(currentPos.get(0)+1,currentPos.get(1)+1));
-		return boardAdjusted;
-	}
-	
-	public void setPos(ArrayList<Integer> pos) {
-		this.currentPos.set(0, pos.get(0)-1);
-		this.currentPos.set(1,pos.get(1)-1);
-	}
+
 }
