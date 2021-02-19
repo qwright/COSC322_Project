@@ -56,18 +56,26 @@ public class GameBoard {
 			if(state.get(i) == 2 && nWQueens < nMaxWQueens) {
 				nWQueens++;
 				Queen q = new Queen(nBQueens, true, qPos);
-				bQueens.add(q);
+				wQueens.add(q);
 				board[row][column].setQueen(q);
 			}
 			column++;
 			counter ++;
 		}
 		System.out.println("Board initialized");
-		printBoard();
+		//printBoard();
 	}
 	
 	public void setAIColor(boolean isWhite) {
 		this.AI_isWhite = isWhite;
+	}
+	public List<Queen> getQueens(){
+		if(AI_isWhite) {
+			return wQueens;
+		}else {
+			return bQueens;
+		}
+
 	}
 	/*
 	 * Update the board for any movement. start, end, and arrow
@@ -134,30 +142,30 @@ public class GameBoard {
 		moved.setPos(updatedQPos.get(0));
 		board[updatedQPos.get(0)[0]][updatedQPos.get(0)[1]].setQueen(moved, true);
      	*/
-		printBoard();
+		//printBoard();
 	}
-	
-	private void printBoard() {
-		//implement if wanted once we know what arrow is represented as from server
-		BoardTile t = null;
-		for(int row=0; row<board[0].length; row++) {
-			for(int col=0; col<board[1].length; col++) {
-				t = board[row][col];
-				if(t.containsQueen()) {
-					if(t.getQueen().isWhite) {
-						System.out.print("2");
-					}else {
-						System.out.print("1");
-					}
-				}
-				else if(t.containsArrow()) {
-					System.out.print("X");
-				}else {
-					System.out.print("0");
-				}
-				System.out.print(" ");
-			}
-			System.out.println();
-		}
-	}
+	//Dont know whats going on but t.getQueen().isWhite is returning null and crashing the program
+//	private void printBoard() {
+//		//implement if wanted once we know what arrow is represented as from server
+//		BoardTile t = null;
+//		for(int row=0; row<board[0].length; row++) {
+//			for(int col=0; col<board[1].length; col++) {
+//				t = board[row][col];
+//				if(t.containsQueen()) {
+//					if(t.getQueen().isWhite) {
+//						System.out.print("2");
+//					}else {
+//						System.out.print("1");
+//					}
+//				}
+//				else if(t.containsArrow()) {
+//					System.out.print("X");
+//				}else {
+//					System.out.print("0");
+//				}
+//				System.out.print(" ");
+//			}
+//			System.out.println();
+//		}
+//	}
 }

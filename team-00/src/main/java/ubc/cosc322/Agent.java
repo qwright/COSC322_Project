@@ -56,6 +56,7 @@ public class Agent extends GamePlayer{
     	    	switch(messageType) {
     	    	case GameMessage.GAME_ACTION_START:
     	    		System.out.println(this.userName());
+    	    		System.out.println(AmazonsGameMessage.PLAYER_WHITE);
     	    		if((msgDetails.get(AmazonsGameMessage.PLAYER_WHITE)).equals(this.userName())){
     	    			System.out.println("The AI is white");
     	    			board.setAIColor(true);
@@ -74,7 +75,23 @@ public class Agent extends GamePlayer{
     	    		board = new GameBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.GAME_STATE));
     	    		break;
     	    	case GameMessage.GAME_ACTION_MOVE:
-    	    		board.updateBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR), (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
+    	    		//Updating board based on opponents moves
+    	    		board.updateBoard((ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR), 
+    	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), 
+    	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
+    	    		
+    	    		ArrayList<Integer> qCurr = board.getQueens().get(0).getCurrentPos();
+    	    		ArrayList<Integer> qNext = board.getQueens().get(0).availableTiles(board.board).get(0);
+    	    		ArrayList<Integer> aNext = board.getQueens().get(0).availableTiles(board.board).get(1);
+    	    		System.out.println(qCurr);
+    	    		System.out.println(qNext);
+    	    		System.out.println(aNext);
+    	    		board.updateBoard(qCurr, qNext, aNext);
+    	    		gameClient.sendMoveMessage(qCurr, qNext, aNext);
+    	    		//Will want to make our move based on the updated board
+    	    		
+    	    		
+    	    		//Send the move
     	    		
     	    		//ArrayList<Integer> q_orig = (ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.QUEEN_POS_CURR);
     	    		//System.out.println("QueenStart: " + q_orig.get(0) + ", " + q_orig.get(1));

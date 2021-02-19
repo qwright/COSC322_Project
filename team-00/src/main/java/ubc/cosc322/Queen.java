@@ -1,10 +1,11 @@
 package ubc.cosc322;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Queen {
 	
-	int[] currentPos;
+	ArrayList<Integer> currentPos;
 	int id;
 	boolean isWhite;
 
@@ -13,27 +14,28 @@ public class Queen {
 	{
 		this.id = id;
 		this.isWhite = isWhite;
-		this.currentPos = start_pos;
+		this.currentPos = new ArrayList<>(Arrays.asList(start_pos[0],start_pos[1]));
 	}
 	
 	//returns a list of current tiles that the queen may move to given the current board state
 	//Possible moves are calculated from queens current position and if there is a queen or arrow in the path
 	//further possible moves are blocked
-	public ArrayList<int[]> availableTiles(BoardTile[][] board)
+	public ArrayList<ArrayList<Integer>> availableTiles(BoardTile[][] board)
 	{
 		
-		ArrayList<int[]> moves = new ArrayList<int[]>();
-		int rowPos = currentPos[0];
-		int colPos = currentPos[1];
-		int[] tile = new int[2];
+		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
+		int rowPos = currentPos.get(0);
+		int colPos = currentPos.get(1);
+		
 		//Horizontal -right from current
 		for(int i=colPos; i < 10; i++) {
 			if(i==colPos) {
 				continue;
 			}
 			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
-				tile[0] = rowPos;
-				tile[1] = i;
+				ArrayList<Integer> tile = new ArrayList<Integer>();
+				tile.add(rowPos+1);
+				tile.add(i+1);
 				moves.add(tile);
 			}else {
 				break;
@@ -45,8 +47,9 @@ public class Queen {
 				continue;
 			}
 			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
-				tile[0] = rowPos;
-				tile[1] = i;
+				ArrayList<Integer> tile = new ArrayList<Integer>();
+				tile.add(rowPos+1);
+				tile.add(i+1);
 				moves.add(tile);
 			}else {
 				break;
@@ -58,8 +61,9 @@ public class Queen {
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
-				tile[0] = i;
-				tile[1] = colPos;
+				ArrayList<Integer> tile = new ArrayList<Integer>();
+				tile.add(i+1);
+				tile.add(colPos+1);
 				moves.add(tile);
 			}else {
 				break;
@@ -71,8 +75,9 @@ public class Queen {
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
-				tile[0] = i;
-				tile[1] = colPos;
+				ArrayList<Integer> tile = new ArrayList<Integer>();
+				tile.add(i+1);
+				tile.add(colPos+1);
 				moves.add(tile);
 			}else {
 				break;
@@ -91,8 +96,9 @@ public class Queen {
 					continue;
 				}
 				if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-					tile[0] = tempRow;
-					tile[1] = i;
+					ArrayList<Integer> tile = new ArrayList<Integer>();
+					tile.add(tempRow+1);
+					tile.add(i+1);
 					moves.add(tile);
 				}else {
 					break;
@@ -108,8 +114,9 @@ public class Queen {
 					continue;
 				}
 				if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-					tile[0] = i;
-					tile[1] = tempCol;
+					ArrayList<Integer> tile = new ArrayList<Integer>();
+					tile.add(i+1);
+					tile.add(tempCol+1);
 					moves.add(tile);
 				}else {
 					break;
@@ -129,8 +136,9 @@ public class Queen {
 						continue;
 					}
 					if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-						tile[0] = tempRow;
-						tile[1] = i;
+						ArrayList<Integer> tile = new ArrayList<Integer>();
+						tile.add(tempRow+1);
+						tile.add(i+1);
 						moves.add(tile);
 					}else {
 						break;
@@ -146,8 +154,9 @@ public class Queen {
 						continue;
 					}
 					if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-						tile[0] = i;
-						tile[1] = tempCol;
+						ArrayList<Integer> tile = new ArrayList<Integer>();
+						tile.add(i+1);
+						tile.add(tempCol+1);
 						moves.add(tile);
 					}else {
 						break;
@@ -167,8 +176,9 @@ public class Queen {
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-							tile[0] = tempRow;
-							tile[1] = i;
+							ArrayList<Integer> tile = new ArrayList<Integer>();
+							tile.add(tempRow+1);
+							tile.add(i+1);
 							moves.add(tile);
 						}else {
 							break;
@@ -184,8 +194,9 @@ public class Queen {
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-							tile[0] = i;
-							tile[1] = tempCol;
+							ArrayList<Integer> tile = new ArrayList<Integer>();
+							tile.add(i+1);
+							tile.add(tempCol+1);
 							moves.add(tile);
 						}else {
 							break;
@@ -204,8 +215,9 @@ public class Queen {
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-							tile[0] = tempRow;
-							tile[1] = i;
+							ArrayList<Integer> tile = new ArrayList<Integer>();
+							tile.add(tempRow+1);
+							tile.add(i+1);
 							moves.add(tile);
 						}else {
 							break;
@@ -221,8 +233,9 @@ public class Queen {
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-							tile[0] = i;
-							tile[1] = tempCol;
+							ArrayList<Integer> tile = new ArrayList<Integer>();
+							tile.add(i+1);
+							tile.add(tempCol+1);
 							moves.add(tile);
 						}else {
 							break;
@@ -238,12 +251,14 @@ public class Queen {
 		return id;
 	}
 	
-	public int[] getCurrentPos()
+	public ArrayList<Integer> getCurrentPos()
 	{
-		return currentPos;
+		ArrayList<Integer> boardAdjusted = new ArrayList<Integer>(
+				Arrays.asList(currentPos.get(0)+1,currentPos.get(1)+1));
+		return boardAdjusted;
 	}
 	
-	public void setPos(int[] pos) {
+	public void setPos(ArrayList<Integer> pos) {
 		this.currentPos = pos;
 	}
 }
