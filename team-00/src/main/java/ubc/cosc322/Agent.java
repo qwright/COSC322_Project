@@ -36,7 +36,7 @@ public class Agent extends GamePlayer{
 	public void onLogin() {
 		// TODO Auto-generated method stub
 	
-		this.gameClient.joinRoom("Kootenay Lake");
+		this.gameClient.joinRoom("Okanagan Lake");
 		
 	}
 	
@@ -80,7 +80,8 @@ public class Agent extends GamePlayer{
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), 
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
-    	    		ArrayList<Integer> qCurr = board.getQueens().get(0).getCurrentPos();
+    	    		//get first queen
+    	    		ArrayList<Integer> qCurr = board.getQueens().get(1).getCurrentPos();
     	    		ArrayList<Integer> qNext = board.getQueens().get(0).availableTiles(board.board).get(0);
     	    		ArrayList<Integer> aNext = board.getQueens().get(0).availableTiles(board.board).get(1);
     	    		System.out.println(qCurr);

@@ -259,6 +259,7 @@ public class Queen {
 	}
 	
 	public void setPos(ArrayList<Integer> pos) {
-		this.currentPos = pos;
+		this.currentPos.set(0, pos.get(0)-1);
+		this.currentPos.set(1,pos.get(1)-1);
 	}
 }

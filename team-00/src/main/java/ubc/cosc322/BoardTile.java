@@ -4,7 +4,7 @@ public class BoardTile {
 	
 	private boolean hasArrow;
 	private boolean hasQueen;
-	private Queen queen= null;
+	private Queen queen = null;
 	
 	public int[] index;
 	
