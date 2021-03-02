@@ -33,13 +33,17 @@ public class Node {
 	}
 	
 	public void updateScore(int score) {
-		this.score = score;
+		this.score += score;
 	}
 	
-	public void updateVists(int vists) {
-		this.visits = vists;
+	public void updateVists() {
+		this.visits++;
 	}
-	
+	public boolean isLeaf() {
+		if(this.children.isEmpty())
+			return true;
+		return false;
+	}
 	
 	public ArrayList<Integer> getPosition(){
 		return nodePosition;

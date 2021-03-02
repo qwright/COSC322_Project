@@ -80,15 +80,24 @@ public class Agent extends GamePlayer{
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), 
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
-    	    		//get first queen
-    	    		ArrayList<Integer> qCurr = board.getQueens().get(1).getCurrentPos();
-    	    		ArrayList<Integer> qNext = board.getQueens().get(0).availableTiles(board.board).get(0);
-    	    		ArrayList<Integer> aNext = board.getQueens().get(0).availableTiles(board.board).get(1);
-    	    		System.out.println(qCurr);
-    	    		System.out.println(qNext);
-    	    		System.out.println(aNext);
-    	    		board.updateBoard(qCurr, qNext, aNext);
-    	    		gameClient.sendMoveMessage(qCurr, qNext, aNext);
+    	    		
+    	    		GameBoard cloned = null;
+					try {
+						cloned = (GameBoard) board.clone();
+					} catch (CloneNotSupportedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    	    		MCTS monte = new MCTS();
+    	    		Queen current = board.getQueens().get(0);
+    	    		ArrayList<Integer> nextMove = monte.run(cloned, current);
+    	    		ArrayList<Integer>qcur = current.getCurrentPos();
+    	    
+    	    		System.out.println(qcur);
+    	    		System.out.println(nextMove);
+    	    		System.out.println(qcur);
+    	    		board.updateBoard(qcur, nextMove, qcur);
+    	    		gameClient.sendMoveMessage(qcur, nextMove, qcur);
     	    		//Will want to make our move based on the updated board
     	    		
     	    		

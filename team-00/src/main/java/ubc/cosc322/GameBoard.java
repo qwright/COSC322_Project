@@ -3,7 +3,7 @@ package ubc.cosc322;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameBoard {
+public class GameBoard implements Cloneable{
 
 	int nRows = 11;
 	int nCols = 11;
@@ -68,6 +68,11 @@ public class GameBoard {
 	public void setAIColor(boolean isWhite) {
 		this.AI_isWhite = isWhite;
 	}
+	public BoardTile[][] getBoard(){
+		return board;
+	}
+	
+	
 	public List<Queen> getQueens(){
 		if(AI_isWhite) {
 			return wQueens;
@@ -90,6 +95,10 @@ public class GameBoard {
 		board[arrow.get(0)][arrow.get(1)].setArrow(true);
 	
 		printBoard();
+	}
+	
+	public Object clone() throws CloneNotSupportedException{
+		return (GameBoard)super.clone();
 	}
 	
 	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> Queenpos) {
@@ -312,6 +321,9 @@ public class GameBoard {
 						}
 						tempCol++;
 				}
+				}
+				if(moves.isEmpty()) {
+					moves=null;
 				}
 				
 				return moves;
