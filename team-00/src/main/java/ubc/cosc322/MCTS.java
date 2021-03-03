@@ -22,11 +22,12 @@ public class MCTS {
 	
 	for(ArrayList<Integer> queenmove: queenmoves) {
 		
-			
 		
 			board.updateBoard(queenPos, queenmove);
 		
 			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
+			
+		
 			for(int i =0; i<= arrowshots.size();i++) {
 				if(i==arrowshots.size()) {
 					//revert back

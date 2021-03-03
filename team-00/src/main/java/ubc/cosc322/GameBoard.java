@@ -24,17 +24,22 @@ public class GameBoard implements Cloneable{
 		
 	}
 	
-	public GameBoard(GameBoard board) {
-		// TODO Auto-generated constructor stub
-		this.wQueens = board.wQueens;
-		this.bQueens = board.bQueens;
-		this.AI_isWhite = board.AI_isWhite;
-		this.board = board.getBoard().clone();
-		for(int row=0; row<nRows;row++) {
-			this.board[row] = board.getBoard()[row].clone();
-		}
-		this.printBoard();
-	}
+//	public GameBoard(GameBoard that) {
+//		// TODO Auto-generated constructor stub
+//		this.wQueens = that.wQueens;
+//		this.bQueens = that.bQueens;
+//		this.AI_isWhite = that.AI_isWhite;
+//		this.board = that.getBoard().clone();
+//		for(int row=0; row<nRows;row++) {
+//			for(int col =0; col<nCols;col++) {
+//				this.board[row][col] =  new BoardTile(that.getBoard()[row][col]);
+//			}
+//			
+//		}
+//		System.out.println("Cloned board");
+//		this.printBoard();
+//	}
+	
 
 	private void initBoard(ArrayList<Integer> state)
 	{

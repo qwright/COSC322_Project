@@ -1,6 +1,6 @@
 package ubc.cosc322;
 
-public class BoardTile {
+public class BoardTile implements Cloneable{
 	
 	private boolean hasArrow;
 	private boolean hasQueen;
