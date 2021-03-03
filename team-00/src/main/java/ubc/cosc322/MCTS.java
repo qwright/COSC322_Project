@@ -1,6 +1,8 @@
 package ubc.cosc322;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.ArrayList;
 //general idea
 //check if node has been visited before, if no simulate random moves till end of game and return
@@ -19,21 +21,25 @@ public class MCTS {
 	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
 	for(ArrayList<Integer> queenmove: queenmoves) {
-		try {
-			System.out.println("board cloned");
-			GameBoard cloned = (GameBoard)board.clone();
-			
-			cloned.updateBoard(queenPos, queenmove);
 		
-			ArrayList<ArrayList<Integer>> arrowshots = cloned.getMoves(cloned.getBoard(), queenmove);
-			for(ArrayList<Integer> arrowshot: arrowshots) {
-				queenmove.addAll(arrowshot);
-				moves.add(queenmove);
+			
+		
+			board.updateBoard(queenPos, queenmove);
+		
+			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
+			for(int i =0; i<= arrowshots.size();i++) {
+				if(i==arrowshots.size()) {
+					//revert back
+					board.updateBoard(queenmove, queenPos);
+					continue;
+				}
+					
+				List<Integer> move = Stream.of(queenmove,arrowshots.get(i))
+						.flatMap(x -> x.stream())
+						.collect(Collectors.toList());
+				moves.add((ArrayList)move);
+	
 			}
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	Node treeRootNode = new Node(null,queenPos);
 	
@@ -43,12 +49,14 @@ public class MCTS {
 		addChild(treeRootNode,move);
 	}
 	
-	printTree(treeRootNode," ");
 	
+	Node current = treeRootNode;
 	for(int i=0;i<2000;i++) {
-		Node current = treeRootNode;
+		
+		System.out.println(current.getChildren());
 		if(current.isLeaf()) {
 			if(current.getVisits()==0) {
+				System.out.println("doing rollout");
 				int score = rollout(board,current);
 				backpropegate(current,score);
 			}else {
@@ -67,6 +75,7 @@ public class MCTS {
 		}
 			
 	}
+	printTree(treeRootNode," ");
 	return bestMove;
 
 	}

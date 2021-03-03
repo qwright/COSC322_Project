@@ -24,6 +24,18 @@ public class GameBoard implements Cloneable{
 		
 	}
 	
+	public GameBoard(GameBoard board) {
+		// TODO Auto-generated constructor stub
+		this.wQueens = board.wQueens;
+		this.bQueens = board.bQueens;
+		this.AI_isWhite = board.AI_isWhite;
+		this.board = board.getBoard().clone();
+		for(int row=0; row<nRows;row++) {
+			this.board[row] = board.getBoard()[row].clone();
+		}
+		this.printBoard();
+	}
+
 	private void initBoard(ArrayList<Integer> state)
 	{
 		int nWQueens = 0, nBQueens = 0;
@@ -93,7 +105,7 @@ public class GameBoard implements Cloneable{
 		start.removeQueen();
 		end.setQueen(q);
 		board[arrow.get(0)][arrow.get(1)].setArrow(true);
-	
+		System.out.println("game board updated with arrow position");
 		printBoard();
 	}
 	
@@ -106,15 +118,11 @@ public class GameBoard implements Cloneable{
 		q.setPos(move);
 		start.removeQueen();
 		end.setQueen(q);
+		System.out.println("game board updated without arrow position");
 		printBoard();
 	}
 	
-	public Object clone() throws CloneNotSupportedException{
-		GameBoard clone = (GameBoard)super.clone();
-		clone.printBoard();
-		
-		return clone;
-	}
+
 	
 	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> Queenpos) {
 		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();

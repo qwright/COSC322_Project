@@ -12,7 +12,7 @@ public class Node {
 	private final Node parent;
 	
 	Node(Node parent,ArrayList<Integer> position){
-		score = 0;
+		score = 1000000;
 		visits = 0;
 		this.parent = parent;
 		this.nodePosition = position;

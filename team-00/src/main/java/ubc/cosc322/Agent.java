@@ -36,7 +36,7 @@ public class Agent extends GamePlayer{
 	public void onLogin() {
 		// TODO Auto-generated method stub
 	
-		this.gameClient.joinRoom("Okanagan Lake");
+		this.gameClient.joinRoom("Lambly Lake");
 		
 	}
 	
@@ -81,24 +81,18 @@ public class Agent extends GamePlayer{
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
     	    		
-    	    		GameBoard cloned = null;
-					try {
-						System.out.println("Gameboard cloned in agent");
-						cloned = (GameBoard) board.clone();
-					} catch (CloneNotSupportedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+    	    		
     	    		MCTS monte = new MCTS();
     	    		Queen current = board.getQueens().get(0);
-    	    		ArrayList<Integer> nextMove = monte.run(cloned, current);
+    	    		ArrayList<Integer> nextMove = monte.run(board, current);
     	    		ArrayList<Integer>qcur = current.getCurrentPos();
-    	    
+    	    		ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
+    	    		ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
     	    		System.out.println(qcur);
     	    		System.out.println(nextMove);
     	    		System.out.println(qcur);
     	    		board.updateBoard(qcur, nextMove, qcur);
-    	    		gameClient.sendMoveMessage(qcur, nextMove, qcur);
+    	    		gameClient.sendMoveMessage(qcur, qmove,amove);
     	    		//Will want to make our move based on the updated board
     	    		
     	    		
