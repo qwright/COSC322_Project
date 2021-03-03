@@ -10,13 +10,31 @@ public class MCTS {
 
 	int score;
 //shoudl take a copy of the game board
+	
 	public ArrayList<Integer> run(GameBoard board,Queen queen) {
 	
-	
+	ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 	ArrayList<Integer> queenPos = queen.getCurrentPos();
 	
-	ArrayList<ArrayList<Integer>> moves = board.getMoves(board.getBoard(), queenPos);
+	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
+	for(ArrayList<Integer> queenmove: queenmoves) {
+		try {
+			System.out.println("board cloned");
+			GameBoard cloned = (GameBoard)board.clone();
+			
+			cloned.updateBoard(queenPos, queenmove);
+		
+			ArrayList<ArrayList<Integer>> arrowshots = cloned.getMoves(cloned.getBoard(), queenmove);
+			for(ArrayList<Integer> arrowshot: arrowshots) {
+				queenmove.addAll(arrowshot);
+				moves.add(queenmove);
+			}
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	Node treeRootNode = new Node(null,queenPos);
 	
 	

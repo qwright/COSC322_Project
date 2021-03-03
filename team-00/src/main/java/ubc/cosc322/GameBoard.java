@@ -97,8 +97,23 @@ public class GameBoard implements Cloneable{
 		printBoard();
 	}
 	
+	//update board without shooting arrow to find possible arrow shots
+	public void updateBoard(ArrayList<Integer> orig, ArrayList<Integer> move)
+	{
+		BoardTile start = board[orig.get(0)][orig.get(1)];
+		BoardTile end = board[move.get(0)][move.get(1)];
+		Queen q = start.getQueen();
+		q.setPos(move);
+		start.removeQueen();
+		end.setQueen(q);
+		printBoard();
+	}
+	
 	public Object clone() throws CloneNotSupportedException{
-		return (GameBoard)super.clone();
+		GameBoard clone = (GameBoard)super.clone();
+		clone.printBoard();
+		
+		return clone;
 	}
 	
 	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> Queenpos) {
@@ -167,7 +182,7 @@ public class GameBoard implements Cloneable{
 		//possible moves moving up and right from queen
 		//since both are incrementing they will have max-cur tiles left to move
 		//columns will max out first
-		if(9-rowPos>9-colPos) {
+		if(10-rowPos>10-colPos) {
 			int tempRow = rowPos;
 			for(int i=colPos; i < 11; i++) {
 				if(i==colPos) {
@@ -194,7 +209,7 @@ public class GameBoard implements Cloneable{
 				}
 				if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
 					ArrayList<Integer> tile = new ArrayList<Integer>();
-					tile.add(i+1);
+					tile.add(i);
 					tile.add(tempCol);
 					moves.add(tile);
 				}else {
@@ -246,7 +261,7 @@ public class GameBoard implements Cloneable{
 		
 		//(0,9) to (9,0)
 			//possible moves left(col--) and up(row++) from queen
-				if(9-rowPos>colPos) {
+				if(10-rowPos>colPos) {
 					//row has more moves so col will max out first
 					int tempRow = rowPos;
 					for(int i=colPos; i >0 ; i--) {
@@ -285,7 +300,7 @@ public class GameBoard implements Cloneable{
 				}
 				
 				//possible moves right(col++) and down(row--) from queen
-				if(rowPos>9-colPos) {
+				if(rowPos>10-colPos) {
 					//row is higher index so col will max out first
 					int tempRow = rowPos;
 					for(int i=colPos; i <11 ; i++) {

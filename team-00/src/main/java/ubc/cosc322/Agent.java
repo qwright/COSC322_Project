@@ -83,6 +83,7 @@ public class Agent extends GamePlayer{
     	    		
     	    		GameBoard cloned = null;
 					try {
+						System.out.println("Gameboard cloned in agent");
 						cloned = (GameBoard) board.clone();
 					} catch (CloneNotSupportedException e) {
 						// TODO Auto-generated catch block
