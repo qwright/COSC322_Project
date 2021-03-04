@@ -13,7 +13,9 @@ public class MCTS {
 	int score;
 //shoudl take a copy of the game board
 	
-	public ArrayList<Integer> run(GameBoard board,Queen queen) {
+	public ArrayList<Integer> run(GameBoard b,Queen q) {
+	GameBoard board = new GameBoard(b);
+	Queen queen = new Queen(q);
 	
 	ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 	ArrayList<Integer> queenPos = queen.getCurrentPos();
