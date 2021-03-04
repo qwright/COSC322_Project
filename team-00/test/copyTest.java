@@ -1,8 +1,6 @@
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import ubc.cosc322.*;
 
 import org.junit.Test;
@@ -54,8 +52,42 @@ public class copyTest {
 		assertNotEquals(gb.getBoard(), gb_copy.getBoard());
 	}
 	
+	@Test
+	public void updateboardQueen_notEqualTest()
+	{
+		int[] arr = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0};
+
+		ArrayList<Integer> initalBoard = new ArrayList<Integer>();
+		generate_testArr(arr, initalBoard);
+		GameBoard gb = new GameBoard(initalBoard);
+		GameBoard gb_copy = new GameBoard(gb);
+		
+		ArrayList<Integer> q_orig = new ArrayList<Integer>();
+		q_orig.add(10);
+		q_orig.add(4);
+		ArrayList<Integer> q_move = new ArrayList<Integer>();
+		q_move.add(1);
+		q_move.add(1);
+		ArrayList<Integer> arrow = new ArrayList<Integer>();
+		arrow.add(1);
+		arrow.add(2);
+		
+		gb_copy.updateBoard(q_orig, q_move, arrow);
+		
+		assertNotEquals(gb.getBoard()[10][4].containsQueen(), gb_copy.getBoard()[10][4].containsQueen());
+	}
+	
 	@Test 
-	public void queen_notEqualTest()
+	public void queenObject_notEqualTest()
+	{
+		Queen q = new Queen(1,true,new int[] {1,1});
+		Queen q_copy = new Queen(q);
+		
+		assertNotEquals(q, q_copy);
+	}
+	
+	@Test 
+	public void queenPos_notEqualTest()
 	{
 		ArrayList<Integer> testPos = new ArrayList<Integer>();
 		testPos.add(1);
@@ -75,6 +107,18 @@ public class copyTest {
 		bt_copy.setArrow(true);
 		
 		assertNotEquals(bt.containsArrow(), bt_copy.containsArrow());
+		
+	}
+	
+	@Test 
+	public void tileQueen_notEqualTest()
+	{
+		BoardTile bt = new BoardTile(new int[] {1,1});
+		bt.setQueen(new Queen(1,true,new int[] {1,1}));
+		BoardTile bt_copy = new BoardTile(bt);
+		bt_copy.removeQueen();
+		
+		assertNotEquals(bt.containsQueen(), bt_copy.containsQueen());
 		
 	}
 }
