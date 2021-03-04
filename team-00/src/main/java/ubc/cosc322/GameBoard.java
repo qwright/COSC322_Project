@@ -152,10 +152,54 @@ public class GameBoard{
 		printBoard();
 	}
 	
-
-	
-	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> Queenpos) {
+	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> queenpos) {
 		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
+		
+		getLine(board, queenpos, moves, 1, 0); //up
+		getLine(board, queenpos, moves, 0, 1); //down
+		getLine(board, queenpos, moves, -1, 0); //left
+		getLine(board, queenpos, moves, 0, -1); //right
+		
+		getLine(board, queenpos, moves, 1, 1); //NE
+		getLine(board, queenpos, moves, -1, 1); //NW
+		getLine(board, queenpos, moves, 1, -1); //SE
+		getLine(board, queenpos, moves, -1, -1); //SW
+		
+		return moves;
+	}
+	
+	public void getLine(BoardTile[][] board, ArrayList<Integer> queenpos, ArrayList<ArrayList<Integer>> moves, int change_x, int change_y) {
+		int start_x = queenpos.get(0);
+		int start_y = queenpos.get(1);
+		int next_x = start_x + change_x;
+		int next_y = start_y + change_y;
+		//very hacky
+		BoardTile nextTile;
+		try {
+			nextTile = board[next_x][next_y];
+		}catch(Exception e) {
+			nextTile = null;
+		}
+		while(nextTile != null && !nextTile.containsArrow() && !nextTile.containsQueen() ) {
+			ArrayList<Integer> validPos = new ArrayList<Integer>();
+			validPos.add(next_x);
+			validPos.add(next_y);
+			moves.add(validPos);
+			next_x += change_x;
+			next_y += change_y;
+			try {
+				nextTile = board[next_x][next_y];
+			}catch(Exception e) {
+				break;
+			}
+		}
+	}
+	/*
+	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> Queenpos) {
+		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>(96); //max moves possible initially
+		
+		
+		
 		int rowPos = Queenpos.get(0);
 		int colPos = Queenpos.get(1);
 		
@@ -164,11 +208,11 @@ public class GameBoard{
 			if(i==colPos) {
 				continue;
 			}
-			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
-				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(rowPos);
-				tile.add(i);
-				moves.add(tile);
+			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {		
+				ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+				tileToAdd.add(rowPos);
+				tileToAdd.add(i);
+				moves.add(tileToAdd);
 			}else {
 				break;
 			}
@@ -179,10 +223,10 @@ public class GameBoard{
 				continue;
 			}
 			if(!board[rowPos][i].containsArrow() && !board[rowPos][i].containsQueen()) {
-				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(rowPos);
-				tile.add(i);
-				moves.add(tile);
+				ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+				tileToAdd.add(rowPos);
+				tileToAdd.add(i);
+				moves.add(tileToAdd);
 			}else {
 				break;
 			}
@@ -193,10 +237,10 @@ public class GameBoard{
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
-				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(i);
-				tile.add(colPos);
-				moves.add(tile);
+				ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+				tileToAdd.add(i);
+				tileToAdd.add(colPos);
+				moves.add(tileToAdd);
 			}else {
 				break;
 			}
@@ -207,10 +251,10 @@ public class GameBoard{
 				continue;
 			}
 			if(!board[i][colPos].containsArrow() && !board[i][colPos].containsQueen()) {
-				ArrayList<Integer> tile = new ArrayList<Integer>();
-				tile.add(i);
-				tile.add(colPos);
-				moves.add(tile);
+				ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+				tileToAdd.add(i);
+				tileToAdd.add(colPos);
+				moves.add(tileToAdd);
 			}else {
 				break;
 			}
@@ -228,10 +272,10 @@ public class GameBoard{
 					continue;
 				}
 				if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-					ArrayList<Integer> tile = new ArrayList<Integer>();
-					tile.add(tempRow);
-					tile.add(i);
-					moves.add(tile);
+					ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+					tileToAdd.add(tempRow);
+					tileToAdd.add(i);
+					moves.add(tileToAdd);
 				}else {
 					break;
 				}
@@ -246,10 +290,10 @@ public class GameBoard{
 					continue;
 				}
 				if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-					ArrayList<Integer> tile = new ArrayList<Integer>();
-					tile.add(i);
-					tile.add(tempCol);
-					moves.add(tile);
+					ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+					tileToAdd.add(i);
+					tileToAdd.add(tempCol);
+					moves.add(tileToAdd);
 				}else {
 					break;
 				}
@@ -268,10 +312,10 @@ public class GameBoard{
 						continue;
 					}
 					if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-						ArrayList<Integer> tile = new ArrayList<Integer>();
-						tile.add(tempRow);
-						tile.add(i);
-						moves.add(tile);
+						ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+						tileToAdd.add(tempRow);
+						tileToAdd.add(i);
+						moves.add(tileToAdd);
 					}else {
 						break;
 					}
@@ -286,10 +330,10 @@ public class GameBoard{
 						continue;
 					}
 					if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-						ArrayList<Integer> tile = new ArrayList<Integer>();
-						tile.add(i);
-						tile.add(tempCol);
-						moves.add(tile);
+						ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+						tileToAdd.add(i);
+						tileToAdd.add(tempCol);
+						moves.add(tileToAdd);
 					}else {
 						break;
 					}
@@ -308,10 +352,10 @@ public class GameBoard{
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(tempRow);
-							tile.add(i);
-							moves.add(tile);
+							ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+							tileToAdd.add(tempRow);
+							tileToAdd.add(i);
+							moves.add(tileToAdd);
 						}else {
 							break;
 						}
@@ -326,10 +370,10 @@ public class GameBoard{
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(i);
-							tile.add(tempCol);
-							moves.add(tile);
+							ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+							tileToAdd.add(i);
+							tileToAdd.add(tempCol);
+							moves.add(tileToAdd);
 						}else {
 							break;
 						}
@@ -347,10 +391,10 @@ public class GameBoard{
 							continue;
 						}
 						if(!board[tempRow][i].containsArrow() && !board[tempRow][i].containsQueen()) {
-							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(tempRow);
-							tile.add(i);
-							moves.add(tile);
+							ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+							tileToAdd.add(tempRow);
+							tileToAdd.add(i);
+							moves.add(tileToAdd);
 						}else {
 							break;
 						}
@@ -365,10 +409,10 @@ public class GameBoard{
 							continue;
 						}
 						if(!board[i][tempCol].containsArrow() && !board[i][tempCol].containsQueen()) {
-							ArrayList<Integer> tile = new ArrayList<Integer>();
-							tile.add(i);
-							tile.add(tempCol);
-							moves.add(tile);
+							ArrayList<Integer> tileToAdd = new ArrayList<Integer>();
+							tileToAdd.add(i);
+							tileToAdd.add(tempCol);
+							moves.add(tileToAdd);
 						}else {
 							break;
 						}
@@ -381,7 +425,7 @@ public class GameBoard{
 				
 				return moves;
 	}
-	//Dont know whats going on but t.getQueen().isWhite is returning null and crashing the program
+	*/
 	private void printBoard() {
 		//implement if wanted once we know what arrow is represented as from server
 		BoardTile t = null;
