@@ -3,7 +3,7 @@ package ubc.cosc322;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameBoard implements Cloneable{
+public class GameBoard{
 
 	int nRows = 11;
 	int nCols = 11;
@@ -24,22 +24,14 @@ public class GameBoard implements Cloneable{
 		
 	}
 	
-//	public GameBoard(GameBoard that) {
-//		// TODO Auto-generated constructor stub
-//		this.wQueens = that.wQueens;
-//		this.bQueens = that.bQueens;
-//		this.AI_isWhite = that.AI_isWhite;
-//		this.board = that.getBoard().clone();
-//		for(int row=0; row<nRows;row++) {
-//			for(int col =0; col<nCols;col++) {
-//				this.board[row][col] =  new BoardTile(that.getBoard()[row][col]);
-//			}
-//			
-//		}
-//		System.out.println("Cloned board");
-//		this.printBoard();
-//	}
-	
+	// copy constructor
+	public GameBoard(GameBoard gb)
+	{
+		this.board = gb.copyBoard(gb.getBoard());
+		this.AI_isWhite = gb.getAiColor();
+		this.wQueens = gb.copyWQueens(gb.getWQueens());
+		this.bQueens = gb.copyBQueens(gb.getBQueens());
+	}
 
 	private void initBoard(ArrayList<Integer> state)
 	{
@@ -85,19 +77,52 @@ public class GameBoard implements Cloneable{
 	public void setAIColor(boolean isWhite) {
 		this.AI_isWhite = isWhite;
 	}
+	
+	public boolean getAiColor()
+	{
+		return this.AI_isWhite;
+	}
+	
 	public BoardTile[][] getBoard(){
 		return board;
 	}
-	
-	
-	public List<Queen> getQueens(){
-		if(AI_isWhite) {
-			return wQueens;
-		}else {
-			return bQueens;
+	//to be used in copy constructor
+	public BoardTile[][] copyBoard(BoardTile[][] b)
+	{
+		BoardTile[][] copyB = new BoardTile[nRows][nCols];
+		for(int i=0; i < nRows; i++) {
+			for(int j=0; j < nCols; j++) {
+				copyB[i][j] = new BoardTile(b[i][j]);
+			}
 		}
-
+		return copyB;
 	}
+	
+	public List<Queen> getWQueens(){
+			return wQueens;
+	}
+	
+	public List<Queen> copyWQueens(List<Queen> wql){
+		List<Queen> copyWQ = new ArrayList<Queen>();
+		for(Queen q : wql) {
+			copyWQ.add(new Queen(q));
+		}
+		return copyWQ;
+	}
+	
+	public List<Queen> getBQueens()
+	{
+		return bQueens;
+	}
+	
+	public List<Queen> copyBQueens(List<Queen> bql){
+		List<Queen> copyBQ = new ArrayList<Queen>();
+		for(Queen q : bql) {
+			copyBQ.add(new Queen(q));
+		}
+		return copyBQ;
+	}
+
 	/*
 	 * Update the board for any movement. start, end, and arrow
 	 */

@@ -83,7 +83,7 @@ public class Agent extends GamePlayer{
     	    		
     	    		
     	    		MCTS monte = new MCTS();
-    	    		Queen current = board.getQueens().get(0);
+    	    		Queen current = board.getBQueens().get(0); // changes made to this logic TODO: handle ai color here?
     	    		ArrayList<Integer> nextMove = monte.run(board, current);
     	    		ArrayList<Integer>qcur = current.getCurrentPos();
     	    		ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));

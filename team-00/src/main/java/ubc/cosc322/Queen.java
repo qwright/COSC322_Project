@@ -17,6 +17,15 @@ public class Queen {
 		this.isWhite = isWhite;
 		this.currentPos = new ArrayList<>(Arrays.asList(start_pos[0],start_pos[1]));
 	}
+	//copy constructor
+	public Queen(Queen q)
+	{
+		this.currentPos = q.getCurrentPos();
+		this.id = q.getId();
+		this.isWhite = q.isWhite();
+		this.availableMoves = q.getMoves();
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -35,6 +44,11 @@ public class Queen {
 	
 	public ArrayList<ArrayList<Integer>> getMoves(){
 		return availableMoves;
+	}
+	
+	public boolean isWhite()
+	{
+		return isWhite;
 	}
 	
 	//returns a list of current tiles that the queen may move to given the current board state
