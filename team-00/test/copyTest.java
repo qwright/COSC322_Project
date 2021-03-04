@@ -1,6 +1,8 @@
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import ubc.cosc322.*;
 
 import org.junit.Test;
@@ -25,6 +27,31 @@ public class copyTest {
 		gb_copy.setAIColor(true);
 		
 		assertNotEquals(gb.getAiColor(), gb_copy.getAiColor());
+	}
+	
+	@Test
+	public void updateboard_notEqualTest()
+	{
+		int[] arr = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0};
+
+		ArrayList<Integer> initalBoard = new ArrayList<Integer>();
+		generate_testArr(arr, initalBoard);
+		GameBoard gb = new GameBoard(initalBoard);
+		GameBoard gb_copy = new GameBoard(gb);
+		
+		ArrayList<Integer> q_orig = new ArrayList<Integer>();
+		q_orig.add(10);
+		q_orig.add(4);
+		ArrayList<Integer> q_move = new ArrayList<Integer>();
+		q_move.add(1);
+		q_move.add(1);
+		ArrayList<Integer> arrow = new ArrayList<Integer>();
+		arrow.add(1);
+		arrow.add(2);
+		
+		gb_copy.updateBoard(q_orig, q_move, arrow);
+		
+		assertNotEquals(gb.getBoard(), gb_copy.getBoard());
 	}
 	
 	@Test 
