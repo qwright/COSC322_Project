@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.ArrayList;
+import java.util.Random;
 //general idea
 //check if node has been visited before, if no simulate random moves till end of game and return
 //total amount of actions it took and propogate this back up the tree setting node score+=value on the way up
@@ -146,14 +147,18 @@ public class MCTS {
 		board.updateBoard(node.getParent().getPosition(),queenpos ,node.getParent().getPosition());
 		//zero moves have been made
 		int count = 0;
-		while(board.getMoves(currentBoard, queenpos)!=null) {
-			//update board with first move
-			ArrayList<ArrayList<Integer>> nextMove = board.getMoves(currentBoard, queenpos);
-			nextQueenPos = nextMove.get((int)Math.random() * nextMove.size());
+		ArrayList<ArrayList<Integer>> nextMove = board.getMoves(currentBoard, queenpos);
+		while(nextMove.size()!=0) {
+			
+			//int rand = (int)Math.random() * nextMove.size();
+			Random r = new Random();
+			int rand = r.nextInt(nextMove.size());
+			nextQueenPos = nextMove.get(rand);
+			System.out.println(nextQueenPos.toString());
 			board.updateBoard(queenpos, nextQueenPos, queenpos);
 			queenpos = nextQueenPos;
 			count++;
-			
+			nextMove = board.getMoves(currentBoard, queenpos);
 		}
 		
 		
