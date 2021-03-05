@@ -57,7 +57,8 @@ public class MCTS {
 	
 	
 	Node current = treeRootNode;
-	for(int i=0;i<200;i++) {
+	long startTime = System.currentTimeMillis();
+	while(System.currentTimeMillis()-startTime<30000) {
 		System.out.println(current.getPosition());
 		System.out.println("checking isLeaf");
 		
