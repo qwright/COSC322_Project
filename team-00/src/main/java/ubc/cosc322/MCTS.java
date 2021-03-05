@@ -23,46 +23,50 @@ public class MCTS {
 	
 	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
-	for(ArrayList<Integer> queenmove: queenmoves) {
-		
-		
-			board.updateBoard(queenPos, queenmove);
-		
-			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
-			
-		
-			for(int i =0; i<= arrowshots.size();i++) {
-				if(i==arrowshots.size()) {
-					//revert back
-					board.updateBoard(queenmove, queenPos);
-					continue;
-				}
-					
-				List<Integer> move = Stream.of(queenmove,arrowshots.get(i))
-						.flatMap(x -> x.stream())
-						.collect(Collectors.toList());
-				moves.add((ArrayList)move);
-	
-			}
-	}
+//	//getting first layer of the tree
+//	for(ArrayList<Integer> queenmove: queenmoves) {
+//		
+//		
+//			board.updateBoard(queenPos, queenmove);
+//		
+//			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
+//			
+//		
+//			for(int i =0; i<= arrowshots.size();i++) {
+//				if(i==arrowshots.size()) {
+//					//revert back
+//					board.updateBoard(queenmove, queenPos);
+//					continue;
+//				}
+//					
+//				List<Integer> move = Stream.of(queenmove,arrowshots.get(i))
+//						.flatMap(x -> x.stream())
+//						.collect(Collectors.toList());
+//				moves.add((ArrayList)move);
+//	
+//			}
+//	}
+//	
 	Node treeRootNode = new Node(null,queenPos);
-	
-	
-	//adding first layer of moves for root node
-	for(ArrayList<Integer> move: moves) {
-		addChild(treeRootNode,move);
-	}
+//	
+//	
+//	//adding first layer of moves for root node
+//	for(ArrayList<Integer> move: moves) {
+//		addChild(treeRootNode,move);
+//	}
 	
 	
 	Node current = treeRootNode;
-	for(int i=0;i<2000;i++) {
+	for(int i=0;i<200;i++) {
 		System.out.println(current.getPosition());
 		System.out.println("checking isLeaf");
 		
 		if(current.isLeaf()) {
+			if(current.getParent()==null)
+				expandNode(board,current,treeRootNode);
 			if(current.getVisits()==0) {
 				System.out.println("doing rollout");
-				int score = rollout(board,current);
+				int score = rollout(board,current,treeRootNode);
 				backpropegate(current,score);
 				current = treeRootNode;
 				System.out.println("Here");
@@ -70,7 +74,8 @@ public class MCTS {
 				System.out.println(treeRootNode.getScore());
 				
 			}else {
-				expandNode(board,current);
+				//takes in current board and current node
+				expandNode(board,current,treeRootNode);
 			}
 		}else {
 			System.out.println("finding next node");
@@ -128,14 +133,35 @@ public class MCTS {
 		return nextNode;
 	}
 	
-	public static void expandNode(GameBoard board, Node node) {
+	public static void expandNode(GameBoard board, Node nodeToMove, Node treeRootNode) {
 		//will need to update the board to the state of the node that is to be expanded and then get all moves
-
-		ArrayList<Integer> queenpos = node.getPosition();
-		board.updateBoard(node.getParent().getPosition(), queenpos, node.getParent().getPosition());
-		ArrayList<ArrayList<Integer>> moves = board.getMoves(board.getBoard(), queenpos);
+		GameBoard expandBoard = new GameBoard(board);
+		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
+		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition().subList(0, 2));
+		ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
+		//this is clone of original board - moving queen from current pos to next theoretical position
+		expandBoard.updateBoard(queenPosCur, queenPosMove);
+		//getting all moves from that new position
+		ArrayList<ArrayList<Integer>> queenMoves = expandBoard.getMoves(expandBoard.getBoard(), queenPosMove);
+		
+		for(ArrayList<Integer> queenMove: queenMoves) {
+			//creating new board for simulation based off updated board
+			GameBoard simulationBoard = new GameBoard(expandBoard);
+			simulationBoard.updateBoard(queenPosMove, queenMove);
+			
+			ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
+			for(ArrayList<Integer> arrowShot: arrowShots) {
+				List<Integer> move = Stream.of(queenMove,arrowShot)
+						.flatMap(x -> x.stream())
+						.collect(Collectors.toList());
+				moves.add((ArrayList)move);
+			}
+		}
+		
+		
+		
 		for(ArrayList<Integer> move: moves) {
-			addChild(node,move);
+			addChild(nodeToMove,move);
 		}
 	}
 	
@@ -151,19 +177,20 @@ public class MCTS {
 		child.updateVists();
 		
 	}
-	private static int rollout(GameBoard board,Node node) {
+	private static int rollout(GameBoard board,Node nodeToMove, Node treeRootNode) {
 		GameBoard rolloutBoard = new GameBoard(board);
 		
-		
+		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
+		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition().subList(0, 2));
 		//try rolling out only using one player to move
-		ArrayList<Integer> queenpos = node.getPosition();
+	
 		ArrayList<Integer>nextQueenPos;
 		BoardTile[][] currentBoard = rolloutBoard.getBoard();
 		//updating the board so the select queen is now moved to the current node not the root
-		rolloutBoard.updateBoard(node.getParent().getPosition(),queenpos ,node.getParent().getPosition());
+		rolloutBoard.updateBoard(queenPosCur,queenPosMove);
 		//zero moves have been made
 		int count = 0;
-		ArrayList<ArrayList<Integer>> nextMove = rolloutBoard.getMoves(currentBoard, queenpos);
+		ArrayList<ArrayList<Integer>> nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
 		while(nextMove.size()!=0) {
 			
 			//int rand = (int)Math.random() * nextMove.size();
@@ -171,10 +198,10 @@ public class MCTS {
 			int rand = r.nextInt(nextMove.size());
 			nextQueenPos = nextMove.get(rand);
 			System.out.println(nextQueenPos.toString());
-			rolloutBoard.updateBoard(queenpos, nextQueenPos, queenpos);
-			queenpos = nextQueenPos;
+			rolloutBoard.updateBoard(queenPosMove, nextQueenPos, queenPosMove);
+			queenPosMove = nextQueenPos;
 			count++;
-			nextMove = rolloutBoard.getMoves(currentBoard, queenpos);
+			nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
 		}
 		
 		System.out.println(count);
