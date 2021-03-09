@@ -91,7 +91,7 @@ public class Agent extends GamePlayer{
     	    		System.out.println(qcur);
     	    		System.out.println(nextMove);
     	    		System.out.println(qcur);
-    	    		board.updateBoard(qcur, nextMove, qcur);
+    	    		board.updateBoard(qcur, qmove, amove);
     	    		gameClient.sendMoveMessage(qcur, qmove,amove);
     	    		//Will want to make our move based on the updated board
     	    		

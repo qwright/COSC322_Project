@@ -70,8 +70,8 @@ public class GameBoard{
 			column++;
 			counter ++;
 		}
-		System.out.println("Board initialized");
-		printBoard();
+		//System.out.println("Board initialized");
+		//printBoard();
 	}
 	
 	public void setAIColor(boolean isWhite) {
@@ -135,8 +135,8 @@ public class GameBoard{
 		start.removeQueen();
 		end.setQueen(q);
 		board[arrow.get(0)][arrow.get(1)].setArrow(true);
-		System.out.println("game board updated with arrow position");
-		printBoard();
+		//System.out.println("game board updated with arrow position");
+		//printBoard();
 	}
 	
 	//update board without shooting arrow to find possible arrow shots
@@ -148,8 +148,8 @@ public class GameBoard{
 		q.setPos(move);
 		start.removeQueen();
 		end.setQueen(q);
-		System.out.println("game board updated without arrow position");
-		printBoard();
+		//System.out.println("game board updated without arrow position");
+		//printBoard();
 	}
 	
 	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> queenpos) {
@@ -180,7 +180,7 @@ public class GameBoard{
 		}catch(Exception e) {
 			nextTile = null;
 		}
-		while(nextTile != null && !nextTile.containsArrow() && !nextTile.containsQueen() ) {
+		while(nextTile != null && !nextTile.containsArrow() && !nextTile.containsQueen() && next_x !=0 & next_y !=0) {
 			ArrayList<Integer> validPos = new ArrayList<Integer>();
 			validPos.add(next_x);
 			validPos.add(next_y);
@@ -426,7 +426,7 @@ public class GameBoard{
 				return moves;
 	}
 	*/
-	private void printBoard() {
+	public void printBoard() {
 		//implement if wanted once we know what arrow is represented as from server
 		BoardTile t = null;
 		for(int row=0; row<nRows; row++) {
