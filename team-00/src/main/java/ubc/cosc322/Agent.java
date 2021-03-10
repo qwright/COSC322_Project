@@ -36,7 +36,7 @@ public class Agent extends GamePlayer{
 	public void onLogin() {
 		// TODO Auto-generated method stub
 	
-		this.gameClient.joinRoom("Okanagan Lake");
+		this.gameClient.joinRoom("Lambly Lake");
 		
 	}
 	
@@ -80,15 +80,19 @@ public class Agent extends GamePlayer{
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), 
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
-    	    		//get first queen
-    	    		ArrayList<Integer> qCurr = board.getQueens().get(1).getCurrentPos();
-    	    		ArrayList<Integer> qNext = board.getQueens().get(0).availableTiles(board.board).get(0);
-    	    		ArrayList<Integer> aNext = board.getQueens().get(0).availableTiles(board.board).get(1);
-    	    		System.out.println(qCurr);
-    	    		System.out.println(qNext);
-    	    		System.out.println(aNext);
-    	    		board.updateBoard(qCurr, qNext, aNext);
-    	    		gameClient.sendMoveMessage(qCurr, qNext, aNext);
+    	    		
+    	    		
+    	    		MCTS monte = new MCTS();
+    	    		Queen current = board.getBQueens().get(0); // changes made to this logic TODO: handle ai color here?
+    	    		ArrayList<Integer> nextMove = monte.run(board, current);
+    	    		ArrayList<Integer>qcur = current.getCurrentPos();
+    	    		ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
+    	    		ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
+    	    		System.out.println(qcur);
+    	    		System.out.println(nextMove);
+    	    		System.out.println(qcur);
+    	    		board.updateBoard(qcur, nextMove, qcur);
+    	    		gameClient.sendMoveMessage(qcur, qmove,amove);
     	    		//Will want to make our move based on the updated board
     	    		
     	    		

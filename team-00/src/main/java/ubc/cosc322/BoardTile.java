@@ -1,6 +1,6 @@
 package ubc.cosc322;
 
-public class BoardTile {
+public class BoardTile{
 	
 	private boolean hasArrow;
 	private boolean hasQueen;
@@ -13,6 +13,16 @@ public class BoardTile {
 		this.index = index;
 		hasArrow = false;
 		hasQueen = false;
+	}
+	/*
+	 * copy constructor
+	 */
+	public BoardTile(BoardTile bt)
+	{
+		this(bt.index);
+		this.hasArrow = bt.containsArrow();
+		this.hasQueen = bt.containsQueen();
+		this.queen = (bt.containsQueen() ? new Queen(bt.getQueen()) : null);
 	}
 
 	public boolean containsQueen() {
