@@ -84,17 +84,18 @@ public class MCTS {
 			current = getNextNode(current);
 		}
 	}
-	ArrayList<Integer> bestMove = null;
+	ArrayList<Integer> potentialMove = null;
 	for(Node child: treeRootNode.getChildren()) {
 		int best =0;
-		if(child.getScore()>best) {
+		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
+		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
-			bestMove = child.getPosition();
+			potentialMove = child.getPosition();
 		}
 			
 	}
 	printTree(treeRootNode," ");
-	return bestMove;
+	return potentialMove;
 
 	}
 	 private static void printTree(Node node, String appender) {
@@ -152,10 +153,12 @@ public class MCTS {
 			
 			ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
 			for(ArrayList<Integer> arrowShot: arrowShots) {
+				if(!queenMove.equals(arrowShot)) {
 				List<Integer> move = Stream.of(queenMove,arrowShot)
 						.flatMap(x -> x.stream())
 						.collect(Collectors.toList());
 				moves.add((ArrayList)move);
+				}
 			}
 		}
 		
