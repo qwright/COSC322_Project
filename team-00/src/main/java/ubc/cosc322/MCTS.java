@@ -9,12 +9,22 @@ import java.util.Random;
 //check if node has been visited before, if no simulate random moves till end of game and return
 //total amount of actions it took and propogate this back up the tree setting node score+=value on the way up
 //
-public class MCTS {
+public class MCTS implements Runnable{
 
 	int score;
-//shoudl take a copy of the game board
+	ArrayList<Integer> bestMove = new ArrayList<Integer>();
+	GameBoard b;
+	Queen q;
+	//shoudl take a copy of the game board
 	
-	public ArrayList<Integer> run(GameBoard b,Queen q) {
+	public MCTS(GameBoard b,Queen q) 
+	{
+		this.b = b;
+		this.q = q;
+	}
+	
+	@Override
+	public void run() {
 	GameBoard board = new GameBoard(b);
 	Queen queen = new Queen(q);
 	
@@ -58,29 +68,29 @@ public class MCTS {
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
-	while(System.currentTimeMillis()-startTime<30000) {
-		System.out.println(current.getPosition());
-		System.out.println("checking isLeaf");
+	while(System.currentTimeMillis()-startTime<10000) {
+		//System.out.println(current.getPosition());
+		//System.out.println("checking isLeaf");
 		
 		if(current.isLeaf()) {
 			if(current.getParent()==null)
 				expandNode(board,current,treeRootNode);
 			if(current.getVisits()==0) {
-				System.out.println("doing rollout");
+				//System.out.println("doing rollout");
 				int score = rollout(board,current,treeRootNode);
 				backpropegate(current,score);
 				current = treeRootNode;
-				System.out.println("Here");
-				System.out.println(treeRootNode.getVisits());
-				System.out.println(treeRootNode.getScore());
+				//System.out.println("Here");
+				//System.out.println(treeRootNode.getVisits());
+				//System.out.println(treeRootNode.getScore());
 				
 			}else {
 				//takes in current board and current node
 				expandNode(board,current,treeRootNode);
 			}
 		}else {
-			System.out.println("finding next node");
-			System.out.println(current.getPosition());
+			//System.out.println("finding next node");
+			//System.out.println(current.getPosition());
 			current = getNextNode(current);
 		}
 	}
@@ -94,12 +104,12 @@ public class MCTS {
 		}
 			
 	}
-	printTree(treeRootNode," ");
-	return potentialMove;
-
+	//printTree(treeRootNode," ");
+	this.bestMove= potentialMove;
+	System.out.println("MCTS done");
 	}
 	 private static void printTree(Node node, String appender) {
-		  System.out.println(appender + node.getPosition());
+		  //System.out.println(appender + node.getPosition());
 		  for (Node each : node.getChildren()) {
 		   printTree(each, appender + appender);
 		  }
@@ -118,20 +128,20 @@ public class MCTS {
 		List<Node> children = parentNode.getChildren();
 		double score = 0;
 		Node nextNode = null;
-		System.out.println(children);
+		//System.out.println(children);
 		//looping through nodes and will return the position of the node(acting as unique identifier for the node)
 		for(Node child: children) {
 			double UCB1 = getUCB1(child);
-			System.out.println(UCB1);
-			System.out.println(child.getVisits());
+			//System.out.println(UCB1);
+			//System.out.println(child.getVisits());
 			if(UCB1>score) {
 				score = UCB1;
 				nextNode = child;
 			}
 			
 		}
-		System.out.println("next node");
-		System.out.println(nextNode.getScore());
+		//System.out.println("next node");
+		//System.out.println(nextNode.getScore());
 		return nextNode;
 	}
 	
@@ -201,14 +211,14 @@ public class MCTS {
 			Random r = new Random();
 			int rand = r.nextInt(nextMove.size());
 			nextQueenPos = nextMove.get(rand);
-			System.out.println(nextQueenPos.toString());
+			//System.out.println(nextQueenPos.toString());
 			rolloutBoard.updateBoard(queenPosMove, nextQueenPos, queenPosMove);
 			queenPosMove = nextQueenPos;
 			count++;
 			nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
 		}
 		
-		System.out.println(count);
+		//System.out.println(count);
 		return count;
 		
 			
@@ -219,6 +229,24 @@ public class MCTS {
 		Node node = new Node(parent,nodePosition);
 		parent.getChildren().add(node);
 		return node;
+	}
+	
+	/*
+	 * return the best move (queen move followed by arrow move) with score appended
+	 */
+	public ArrayList<Integer> getMove()
+	{
+		return bestMove;
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
+	
+	public Queen getQueen()
+	{
+		return q;
 	}
 	
 }

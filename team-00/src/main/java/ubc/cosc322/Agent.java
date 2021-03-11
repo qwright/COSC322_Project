@@ -1,6 +1,7 @@
 package ubc.cosc322;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,11 @@ public class Agent extends GamePlayer{
 	private String password = null;
 	private GameRules game = null;
 	private GameBoard board = null;
+	
+	private Queen currentQueen = null;
+	private ArrayList<Integer> nextMove = null;
+	private int score = 0;
+	
 	String ourAmazon;
 	String otherAmazon;
 	
@@ -80,12 +86,43 @@ public class Agent extends GamePlayer{
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.Queen_POS_NEXT), 
     	    				(ArrayList<Integer>) msgDetails.get(AmazonsGameMessage.ARROW_POS));
     	    		
+    	    		//reset score every call
+    	    		score = 0;
+    	    		//Keep list of running montes to pull data from
+    	    		ArrayList<MCTS> monteList = new ArrayList<MCTS>();
+    	    		//need to reference threads
+    	    		ArrayList<Thread> threadsList = new ArrayList<Thread>();
     	    		
     	    		
-    	    		MCTS monte = new MCTS();
-    	    		Queen current = board.getBQueens().get(0); // changes made to this logic TODO: handle ai color here?
-    	    		ArrayList<Integer> nextMove = monte.run(board, current);
-    	    		ArrayList<Integer>qcur = current.getCurrentPos();
+    	    		//Generate threads for queens
+    	    		for(Queen q : board.getBQueens()) {
+    	    			MCTS monte = new MCTS(board,q);
+    	    			monteList.add(monte);
+    	    			Thread thread = new Thread(monte);
+    	    			threadsList.add(thread);
+    	    			System.out.println("new thread started");
+    	    			thread.start();
+    	    		}
+    	    		//Wait for threads to finish in parent thread (join syncs threads i.e. parent + children)
+    	    		for(Thread t : threadsList) {
+    	    			try {
+							t.join();
+							System.out.println("Thread returned");
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} // make parent wait
+    	    		}
+    	    		Collections.shuffle(monteList); //shuffle list to not pick last queen everytime (lot of 0 scores)
+    	    		for(MCTS m : monteList)
+    	    		{
+    	    			//only one thread can access this at a time, probably not necessary
+    	    			tryUpdateMoveSet(m);
+    	    			System.out.println(currentQueen);
+    	    		}
+    	    		
+
+    	    		//ArrayList<Integer> nextMove = monte.run(board, current);
+    	    		ArrayList<Integer>qcur = currentQueen.getCurrentPos();
     	    		ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
     	    		ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
     	    		System.out.println(qcur);
@@ -121,8 +158,19 @@ public class Agent extends GamePlayer{
     	return true; 
 
 	}
-
-
+	/*
+	 * Threads shouldn't be able to access this but in case of any funny business its thread safe. 
+	 */
+	public synchronized void tryUpdateMoveSet(MCTS monte)
+	{
+		if(monte.getScore() >= score) {
+			score = monte.getScore();
+			System.out.println(score);
+			currentQueen = monte.getQueen();
+			nextMove = monte.getMove();
+			System.out.println("Move updated");
+		}
+	}
 
 	@Override
 	public String userName() {
