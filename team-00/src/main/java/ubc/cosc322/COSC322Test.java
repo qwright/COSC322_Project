@@ -42,8 +42,9 @@ public class COSC322Test extends GamePlayer{
     	//COSC322Test player = new COSC322Test(args[0], args[1]);
     	HumanPlayer player = new HumanPlayer();
     	Agent agent = new Agent("test","123");
-    	
+    	Agent agent2 = new Agent("tester", "345");
     	agent.Go();
+    	agent2.Go();
     	if(player.getGameGUI() == null) {
     		player.Go();
     	}

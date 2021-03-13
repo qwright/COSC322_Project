@@ -154,7 +154,7 @@ public class GameBoard{
 	
 	public ArrayList<ArrayList<Integer>> getMoves(BoardTile[][] board, ArrayList<Integer> queenpos) {
 		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
-		
+				
 		getLine(board, queenpos, moves, 1, 0); //up
 		getLine(board, queenpos, moves, 0, 1); //down
 		getLine(board, queenpos, moves, -1, 0); //left

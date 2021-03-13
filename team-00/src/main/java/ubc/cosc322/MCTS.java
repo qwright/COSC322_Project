@@ -11,7 +11,7 @@ import java.util.Random;
 //
 public class MCTS implements Runnable{
 
-	int score;
+	int bestScore;
 	ArrayList<Integer> bestMove = new ArrayList<Integer>();
 	GameBoard b;
 	Queen q;
@@ -68,7 +68,7 @@ public class MCTS implements Runnable{
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
-	while(System.currentTimeMillis()-startTime<10000) {
+	while(System.currentTimeMillis()-startTime<20000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -95,8 +95,8 @@ public class MCTS implements Runnable{
 		}
 	}
 	ArrayList<Integer> potentialMove = null;
+	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
-		int best =0;
 		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
 		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
@@ -105,6 +105,7 @@ public class MCTS implements Runnable{
 			
 	}
 	//printTree(treeRootNode," ");
+	this.bestScore = best;
 	this.bestMove= potentialMove;
 	System.out.println("MCTS done");
 	}
@@ -162,6 +163,8 @@ public class MCTS implements Runnable{
 			simulationBoard.updateBoard(queenPosMove, queenMove);
 			
 			ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
+			//handle arrowshot where queen WAS here as getMoves is overloaded for both and we don't want queen to stay still
+			arrowShots.add(queenMove);
 			for(ArrayList<Integer> arrowShot: arrowShots) {
 				if(!queenMove.equals(arrowShot)) {
 				List<Integer> move = Stream.of(queenMove,arrowShot)
@@ -241,7 +244,7 @@ public class MCTS implements Runnable{
 	
 	public int getScore()
 	{
-		return score;
+		return bestScore;
 	}
 	
 	public Queen getQueen()
