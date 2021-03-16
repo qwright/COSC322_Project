@@ -110,8 +110,10 @@ public class Agent extends GamePlayer{
 	
 	private void generateMove()
 	{
-		//reset score every call
+		//reset move and score every turn
 		score = 0;
+		currentQueen = null;
+		nextMove = null;
 		//Keep list of running montes to pull data from
 		ArrayList<MCTS> monteList = new ArrayList<MCTS>();
 		//need to reference threads
@@ -141,19 +143,24 @@ public class Agent extends GamePlayer{
 		{
 			//only one thread can access this at a time, probably not necessary
 			tryUpdateMoveSet(m);
-			System.out.println(currentQueen);
 		}
 		
 
 		//ArrayList<Integer> nextMove = monte.run(board, current);
 		ArrayList<Integer>qcur = currentQueen.getCurrentPos();
-		ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
-		ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
-		System.out.println(qcur);
-		System.out.println(nextMove);
-		System.out.println(qcur);
-		board.updateBoard(qcur, qmove, amove);
-		gameClient.sendMoveMessage(qcur, qmove,amove);
+		if(!board.getBoard()[qcur.get(0)][qcur.get(1)].containsQueen()) {
+			System.out.println("ILLEGAL MOVE!!!! NO QUEEN ON CURRENT TILE");
+		}
+		if(nextMove == null) {
+			System.out.println("Game Over: OUT OF MOVES");
+		}else {
+			ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
+			ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
+			System.out.println(qcur);
+			System.out.println(nextMove);
+			board.updateBoard(qcur, qmove, amove);
+			gameClient.sendMoveMessage(qcur, qmove,amove);
+		}
 	}
 	/*
 	 * Threads shouldn't be able to access this but in case of any funny business its thread safe. 
@@ -162,7 +169,7 @@ public class Agent extends GamePlayer{
 	{
 		if(monte.getScore() >= score) {
 			score = monte.getScore();
-			System.out.println(score);
+			//System.out.println(score);
 			currentQueen = monte.getQueen();
 			nextMove = monte.getMove();
 			System.out.println("Move updated");
