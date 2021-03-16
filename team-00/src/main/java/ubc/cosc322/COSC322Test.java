@@ -11,6 +11,7 @@ import ygraph.ai.smartfox.games.BaseGameGUI;
 import ygraph.ai.smartfox.games.GameClient;
 import ygraph.ai.smartfox.games.GameMessage;
 import ygraph.ai.smartfox.games.GamePlayer;
+import ygraph.ai.smartfox.games.Spectator;
 import ygraph.ai.smartfox.games.amazons.AmazonsGameMessage;
 import ygraph.ai.smartfox.games.amazons.HumanPlayer;
 
@@ -41,10 +42,11 @@ public class COSC322Test extends GamePlayer{
     public static void main(String[] args) {				 
     	//COSC322Test player = new COSC322Test(args[0], args[1]);
     	HumanPlayer player = new HumanPlayer();
+    	//Spectator spec = new Spectator();
     	Agent agent = new Agent("test","123");
-    	Agent agent2 = new Agent("tester", "345");
+    	//Agent agent2 = new Agent("tester", "345");
     	agent.Go();
-    	agent2.Go();
+    	//agent2.Go();
     	if(player.getGameGUI() == null) {
     		player.Go();
     	}

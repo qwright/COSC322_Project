@@ -68,7 +68,7 @@ public class MCTS implements Runnable{
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
-	while(System.currentTimeMillis()-startTime<20000) {
+	while(System.currentTimeMillis()-startTime<2000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -146,7 +146,7 @@ public class MCTS implements Runnable{
 		return nextNode;
 	}
 	
-	public static void expandNode(GameBoard board, Node nodeToMove, Node treeRootNode) {
+	private void expandNode(GameBoard board, Node nodeToMove, Node treeRootNode) {
 		//will need to update the board to the state of the node that is to be expanded and then get all moves
 		GameBoard expandBoard = new GameBoard(board);
 		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
@@ -182,7 +182,7 @@ public class MCTS implements Runnable{
 		}
 	}
 	
-	private static void backpropegate(Node child,int score) {
+	private void backpropegate(Node child,int score) {
 		
 		while(child.getParent()!= null) {
 			child.updateVists();
@@ -194,7 +194,7 @@ public class MCTS implements Runnable{
 		child.updateVists();
 		
 	}
-	private static int rollout(GameBoard board,Node nodeToMove, Node treeRootNode) {
+	private int rollout(GameBoard board,Node nodeToMove, Node treeRootNode) {
 		GameBoard rolloutBoard = new GameBoard(board);
 		
 		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
@@ -228,7 +228,7 @@ public class MCTS implements Runnable{
 			
 		}
 	
-	private static Node addChild(Node parent, ArrayList<Integer> nodePosition) {
+	private Node addChild(Node parent, ArrayList<Integer> nodePosition) {
 		Node node = new Node(parent,nodePosition);
 		parent.getChildren().add(node);
 		return node;
