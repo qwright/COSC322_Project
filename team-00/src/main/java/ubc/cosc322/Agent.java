@@ -52,7 +52,7 @@ public class Agent extends GamePlayer{
 			e.printStackTrace();
 		}
 		*/
-		this.gameClient.joinRoom("Lambly Lake");
+		this.gameClient.joinRoom("Kentucky Lake");
 		
 	}
 	

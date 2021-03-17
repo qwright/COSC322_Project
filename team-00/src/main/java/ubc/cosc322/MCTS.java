@@ -164,7 +164,7 @@ public class MCTS implements Runnable{
 			
 			ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
 			//handle arrowshot where queen WAS here as getMoves is overloaded for both and we don't want queen to stay still
-			arrowShots.add(queenMove);
+			arrowShots.add(queenPosCur);
 			for(ArrayList<Integer> arrowShot: arrowShots) {
 				if(!queenMove.equals(arrowShot)) {
 				List<Integer> move = Stream.of(queenMove,arrowShot)
