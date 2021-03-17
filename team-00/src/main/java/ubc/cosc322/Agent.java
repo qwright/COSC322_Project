@@ -156,8 +156,10 @@ public class Agent extends GamePlayer{
 		}else {
 			ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
 			ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
-			System.out.println(qcur);
+			System.out.println(qcur + "queen current");
 			System.out.println(nextMove);
+			System.out.println(qmove);
+			System.out.println(amove);
 			board.updateBoard(qcur, qmove, amove);
 			gameClient.sendMoveMessage(qcur, qmove,amove);
 		}

@@ -46,7 +46,11 @@ public class COSC322Test extends GamePlayer{
     	Agent agent = new Agent("test","123");
     	Agent agent2 = new Agent("tester", "345");
     	agent.Go();
+    	int delay = 200; // number of milliseconds to sleep
+        long start = System.currentTimeMillis();
+        while(start >= System.currentTimeMillis() - delay); // do nothing
     	agent2.Go();
+    	while(start >= System.currentTimeMillis() - delay); // do nothing
     	if(player.getGameGUI() == null) {
     		player.Go();
     	}

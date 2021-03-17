@@ -33,42 +33,14 @@ public class MCTS implements Runnable{
 	
 	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
-//	//getting first layer of the tree
-//	for(ArrayList<Integer> queenmove: queenmoves) {
-//		
-//		
-//			board.updateBoard(queenPos, queenmove);
-//		
-//			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
-//			
-//		
-//			for(int i =0; i<= arrowshots.size();i++) {
-//				if(i==arrowshots.size()) {
-//					//revert back
-//					board.updateBoard(queenmove, queenPos);
-//					continue;
-//				}
-//					
-//				List<Integer> move = Stream.of(queenmove,arrowshots.get(i))
-//						.flatMap(x -> x.stream())
-//						.collect(Collectors.toList());
-//				moves.add((ArrayList)move);
-//	
-//			}
-//	}
-//	
+	
 	Node treeRootNode = new Node(null,queenPos);
-//	
-//	
-//	//adding first layer of moves for root node
-//	for(ArrayList<Integer> move: moves) {
-//		addChild(treeRootNode,move);
-//	}
+
 	
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
-	while(System.currentTimeMillis()-startTime<2000) {
+	while(System.currentTimeMillis()-startTime<15000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -98,9 +70,12 @@ public class MCTS implements Runnable{
 	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
 		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
+		
 		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
+			System.out.println(best);
 			potentialMove = child.getPosition();
+			System.out.println(child.getPosition());
 		}
 			
 	}
@@ -166,7 +141,9 @@ public class MCTS implements Runnable{
 			//handle arrowshot where queen WAS here as getMoves is overloaded for both and we don't want queen to stay still
 			arrowShots.add(queenPosCur);
 			for(ArrayList<Integer> arrowShot: arrowShots) {
+				//cant shoot an arrow where the queen wants to move
 				if(!queenMove.equals(arrowShot)) {
+				//builds a list of both the queenMove and arrowShot
 				List<Integer> move = Stream.of(queenMove,arrowShot)
 						.flatMap(x -> x.stream())
 						.collect(Collectors.toList());
