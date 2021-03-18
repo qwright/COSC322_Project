@@ -77,13 +77,13 @@ public class Agent extends GamePlayer{
     	    			System.out.println("The AI is white");
     	    			this.isWhite = true;
     	    			board.setAIColor(true);
-    	    			queens = setTeam(board);
+    	    			queens = board.getWQueens().subList(0, 1);
     	    			generateMove();
     	    		} else {
     	    			System.out.println("The AI is black");
     	    			this.isWhite = false;
     	    			board.setAIColor(false);
-    	    			queens = setTeam(board);
+    	    			queens = board.getBQueens().subList(0, 1);
     	    		}
     	    		
     	    		break;
@@ -122,7 +122,7 @@ public class Agent extends GamePlayer{
 		
 		//Generate threads for queens
 		for(Queen q : queens) {
-			MCTS monte = new MCTS(board,q);
+			MCTS monte = new MCTS(board,q,this.isWhite);
 			monteList.add(monte);
 			Thread thread = new Thread(monte);
 			threadsList.add(thread);
