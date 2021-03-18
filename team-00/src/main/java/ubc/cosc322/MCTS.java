@@ -40,7 +40,7 @@ public class MCTS implements Runnable{
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
-	while(System.currentTimeMillis()-startTime<15000) {
+	while(System.currentTimeMillis()-startTime<2000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -70,34 +70,30 @@ public class MCTS implements Runnable{
 	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
 		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
-		
+		System.out.println(child.getScore());
 		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
-			System.out.println(best);
+			
 			potentialMove = child.getPosition();
-			System.out.println(child.getPosition());
+			
 		}
 			
 	}
 	//printTree(treeRootNode," ");
 	this.bestScore = best;
+	System.out.println(best + " this is the best score with move " + potentialMove);
 	this.bestMove= potentialMove;
 	System.out.println("MCTS done");
 	}
-	 private static void printTree(Node node, String appender) {
-		  //System.out.println(appender + node.getPosition());
-		  for (Node each : node.getChildren()) {
-		   printTree(each, appender + appender);
-		  }
-		 }
+
 	private double getUCB1(Node node) {
 		if(node.getVisits() ==0) {
-			return 1000000;
+			return 100000000;
 		}
 		int visits = node.getVisits();
 		int parentVisits = node.getParent().getVisits();
 		int score =node.getScore();
-		return score + 2*Math.sqrt((Math.log(parentVisits)/visits));
+		return score + 4*Math.sqrt((Math.log(parentVisits)/visits));
 	}
 	
 	private Node getNextNode(Node parentNode) {
@@ -153,7 +149,6 @@ public class MCTS implements Runnable{
 		}
 		
 		
-		
 		for(ArrayList<Integer> move: moves) {
 			addChild(nodeToMove,move);
 		}
@@ -175,27 +170,46 @@ public class MCTS implements Runnable{
 		GameBoard rolloutBoard = new GameBoard(board);
 		
 		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
-		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition().subList(0, 2));
+		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition());
+		
+		
+		
+		
+		
+		//possible arrow shots for moved queen
+		ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(rolloutBoard.getBoard(), queenPosMove);
 		//try rolling out only using one player to move
 	
 		ArrayList<Integer>nextQueenPos;
 		BoardTile[][] currentBoard = rolloutBoard.getBoard();
 		//updating the board so the select queen is now moved to the current node not the root
-		rolloutBoard.updateBoard(queenPosCur,queenPosMove);
+		rolloutBoard.updateBoard(queenPosCur,queenPosMove,queenPosCur);
 		//zero moves have been made
 		int count = 0;
+		//list of moves from the most recent queen move
 		ArrayList<ArrayList<Integer>> nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
-		while(nextMove.size()!=0) {
+		//while there are still moves
+		while(nextMove.size()!=0 ) {
 			
 			//int rand = (int)Math.random() * nextMove.size();
 			Random r = new Random();
-			int rand = r.nextInt(nextMove.size());
-			nextQueenPos = nextMove.get(rand);
+			//picking random queen move
+			int randMove = r.nextInt(nextMove.size());
+			nextQueenPos = nextMove.get(randMove);
+			//getting possible arrow shots for the corresponding random move
+			ArrayList<ArrayList<Integer>> nextArrow = rolloutBoard.getMoves(currentBoard, nextQueenPos);
+			nextArrow.add(nextQueenPos);
+			
+			int randArrow = r.nextInt(nextArrow.size());
+			ArrayList<Integer> nextArrowPos = nextArrow.get(randArrow);
+//			System.out.println(nextArrow + " arrow positions");
+//			System.out.println(nextQueenPos + " queen position");
 			//System.out.println(nextQueenPos.toString());
-			rolloutBoard.updateBoard(queenPosMove, nextQueenPos, queenPosMove);
+			rolloutBoard.updateBoard(queenPosMove, nextQueenPos, nextArrowPos);
 			queenPosMove = nextQueenPos;
 			count++;
 			nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
+			nextArrow = rolloutBoard.getMoves(currentBoard, nextQueenPos);
 		}
 		
 		//System.out.println(count);

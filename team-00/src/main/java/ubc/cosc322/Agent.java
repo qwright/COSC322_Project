@@ -174,6 +174,7 @@ public class Agent extends GamePlayer{
 			//System.out.println(score);
 			currentQueen = monte.getQueen();
 			nextMove = monte.getMove();
+			System.out.println(nextMove);
 			System.out.println("Move updated");
 		}
 	}
