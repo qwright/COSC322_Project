@@ -43,7 +43,7 @@ public class MCTS implements Runnable{
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
 	
-	while(System.currentTimeMillis()-startTime<10000) {
+	while(System.currentTimeMillis()-startTime<2000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -104,7 +104,7 @@ public class MCTS implements Runnable{
 		
 	}
 	System.out.println("Tree root node:" + treeRootNode.getScore());
-	ArrayList<Integer> potentialMove = null;
+	ArrayList<Integer> potentialMove;
 	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
 		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
@@ -112,18 +112,18 @@ public class MCTS implements Runnable{
 		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
 			System.out.println(child.getVisits());
-			potentialMove = child.getPosition();
+			setBestMove(child.getPosition());
 			System.out.println(potentialMove + " from inside");
 			
 		}
 			
 	}
 	//printTree(treeRootNode," ");
-	System.out.println(potentialMove + " from outside");
+	//System.out.println(potentialMove + " from outside");
 	this.bestScore = best;
-	System.out.println(best + " this is the best score with move " + potentialMove);
-	this.bestMove= potentialMove;
-	System.out.println("MCTS done");
+	//System.out.println(best + " this is the best score with move " + potentialMove);
+	//this.bestMove= potentialMove;
+	//System.out.println("MCTS done");
 	}
 
 	private double getUCB1(Node node) {
@@ -307,6 +307,10 @@ public class MCTS implements Runnable{
 	public ArrayList<Integer> getMove()
 	{
 		return bestMove;
+	}
+	
+	private void setBestMove(ArrayList<Integer> bestMove) {
+		this.bestMove = bestMove;
 	}
 	
 	public int getScore()
