@@ -109,7 +109,9 @@ public class MCTS implements Runnable{
 	for(Node child: treeRootNode.getChildren()) {
 		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
 		System.out.println("visits: "+child.getVisits()+" UCB1: "+ getUCB1(child)+ " for node: "+child.getPosition() + " score: " + child.getScore());
-		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
+		System.out.println(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow());
+		System.out.println(child.getScore()>best);
+		if(child.getScore()>=best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
 			System.out.println(child.getVisits());
 			setBestMove(child.getPosition());
