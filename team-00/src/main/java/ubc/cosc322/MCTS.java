@@ -35,7 +35,7 @@ public class MCTS implements Runnable{
 	
 	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
-	System.out.println(queenPos + " quuen position");
+	//System.out.println(queenPos + " quuen position");
 	Node treeRootNode = new Node(null,queenPos);
 
 	
@@ -103,17 +103,21 @@ public class MCTS implements Runnable{
 		}
 		
 	}
-	System.out.println("Tree root node:" + treeRootNode.getScore());
+	//System.out.println("Tree root node:" + treeRootNode.getScore());
 	ArrayList<Integer> potentialMove;
 	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
-		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
-		System.out.println("visits: "+child.getVisits()+" UCB1: "+ getUCB1(child)+ " for node: "+child.getPosition() + " score: " + child.getScore());
-		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
+		potentialMove = child.getPosition();
+		//address unknown bug where position doesn't contain full move information
+		if(potentialMove.size() != 4) {
+			continue;
+		}
+		//System.out.println("visits: "+child.getVisits()+" UCB1: "+ getUCB1(child)+ " for node: "+child.getPosition() + " score: " + child.getScore());
+		if(child.getScore()>=best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
-			System.out.println(child.getVisits());
-			setBestMove(child.getPosition());
-			System.out.println(potentialMove + " from inside");
+			//System.out.println(child.getVisits());
+			setBestMove(potentialMove);
+			//System.out.println(potentialMove + " from inside");
 			
 		}
 			
