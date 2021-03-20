@@ -153,6 +153,9 @@ public class Agent extends GamePlayer{
 		}
 		if(nextMove == null) {
 			System.out.println("Game Over: OUT OF MOVES");
+		}else if(nextMove.size() !=4){
+			
+			System.out.println("Game Over: OUT OF MOVES");
 		}else {
 			ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
 			ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
@@ -169,7 +172,7 @@ public class Agent extends GamePlayer{
 	 */
 	public synchronized void tryUpdateMoveSet(MCTS monte)
 	{
-		if(monte.getScore() >= score) {
+		if(monte.getScore() >= score && monte.getMove().size()==4) {
 			score = monte.getScore();
 			//System.out.println(score);
 			currentQueen = monte.getQueen();
