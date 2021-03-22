@@ -78,12 +78,12 @@ public class Agent extends GamePlayer{
     	    			this.isWhite = true;
     	    			board.setAIColor(true);
     	    			queens = setTeam(board);
-    	    			generateMove();
     	    		} else {
     	    			System.out.println("The AI is black");
     	    			this.isWhite = false;
     	    			board.setAIColor(false);
     	    			queens = setTeam(board);
+    	    			generateMove();
     	    		}
     	    		
     	    		break;
