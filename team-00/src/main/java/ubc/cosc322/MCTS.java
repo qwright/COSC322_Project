@@ -15,12 +15,14 @@ public class MCTS implements Runnable{
 	ArrayList<Integer> bestMove = new ArrayList<Integer>();
 	GameBoard b;
 	Queen q;
+	boolean isWhite;
 	//shoudl take a copy of the game board
 	
-	public MCTS(GameBoard b,Queen q) 
+	public MCTS(GameBoard b,Queen q,boolean isWhite) 
 	{
 		this.b = b;
 		this.q = q;
+		this.isWhite = isWhite;
 	}
 	
 	@Override
@@ -33,51 +35,57 @@ public class MCTS implements Runnable{
 	
 	ArrayList<ArrayList<Integer>> queenmoves = board.getMoves(board.getBoard(), queenPos);
 	
-//	//getting first layer of the tree
-//	for(ArrayList<Integer> queenmove: queenmoves) {
-//		
-//		
-//			board.updateBoard(queenPos, queenmove);
-//		
-//			ArrayList<ArrayList<Integer>> arrowshots = board.getMoves(board.getBoard(), queenmove);
-//			
-//		
-//			for(int i =0; i<= arrowshots.size();i++) {
-//				if(i==arrowshots.size()) {
-//					//revert back
-//					board.updateBoard(queenmove, queenPos);
-//					continue;
-//				}
-//					
-//				List<Integer> move = Stream.of(queenmove,arrowshots.get(i))
-//						.flatMap(x -> x.stream())
-//						.collect(Collectors.toList());
-//				moves.add((ArrayList)move);
-//	
-//			}
-//	}
-//	
+	//System.out.println(queenPos + " quuen position");
 	Node treeRootNode = new Node(null,queenPos);
-//	
-//	
-//	//adding first layer of moves for root node
-//	for(ArrayList<Integer> move: moves) {
-//		addChild(treeRootNode,move);
-//	}
+
 	
 	
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
+	
 	while(System.currentTimeMillis()-startTime<2000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
 		if(current.isLeaf()) {
-			if(current.getParent()==null)
-				expandNode(board,current,treeRootNode);
-			if(current.getVisits()==0) {
+			if(current.getParent()==null) {
+				ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition());
+				
+				//this is clone of original board - moving queen from current pos to next theoretical position
+				
+				//getting all moves from that new position
+				ArrayList<ArrayList<Integer>> queenMoves = board.getMoves(board.getBoard(), queenPosCur);
+				
+				for(ArrayList<Integer> queenMove: queenMoves) {
+					//creating new board for simulation based off updated board
+					GameBoard simulationBoard = new GameBoard(board);
+					simulationBoard.updateBoard(queenPosCur, queenMove);
+					
+					ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
+					//handle arrowshot where queen WAS here as getMoves is overloaded for both and we don't want queen to stay still
+					arrowShots.add(queenPosCur);
+					for(ArrayList<Integer> arrowShot: arrowShots) {
+						//cant shoot an arrow where the queen wants to move
+						if(!queenMove.equals(arrowShot)) {
+						//builds a list of both the queenMove and arrowShot
+						List<Integer> move = Stream.of(queenMove,arrowShot)
+								.flatMap(x -> x.stream())
+								.collect(Collectors.toList());
+						moves.add((ArrayList)move);
+						}
+					}
+				}
+				
+				
+				for(ArrayList<Integer> move: moves) {
+					addChild(treeRootNode,move);
+				
+}
+				
+			}
+			else if(current.getVisits()==0) {
 				//System.out.println("doing rollout");
-				int score = rollout(board,current,treeRootNode);
+				int score = rollout(board,current,treeRootNode,isWhite);
 				backpropegate(current,score);
 				current = treeRootNode;
 				//System.out.println("Here");
@@ -93,48 +101,55 @@ public class MCTS implements Runnable{
 			//System.out.println(current.getPosition());
 			current = getNextNode(current);
 		}
+		
 	}
-	ArrayList<Integer> potentialMove = null;
+	//System.out.println("Tree root node:" + treeRootNode.getScore());
+	ArrayList<Integer> potentialMove;
 	int best =0;
 	for(Node child: treeRootNode.getChildren()) {
-		potentialMove = child.getPosition(); // this is a workaround to unknown bug where child ends up with illegal position
-		if(child.getScore()>best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
+		potentialMove = child.getPosition();
+		//address unknown bug where position doesn't contain full move information
+		if(potentialMove.size() != 4) {
+			continue;
+		}
+		//System.out.println("visits: "+child.getVisits()+" UCB1: "+ getUCB1(child)+ " for node: "+child.getPosition() + " score: " + child.getScore());
+		if(child.getScore()>=best && !b.getBoard()[potentialMove.get(0)][potentialMove.get(1)].containsArrow()) {
 			best = child.getScore();
-			potentialMove = child.getPosition();
+			//System.out.println(child.getVisits());
+			setBestMove(potentialMove);
+			//System.out.println(potentialMove + " from inside");
+			
 		}
 			
 	}
 	//printTree(treeRootNode," ");
+	//System.out.println(potentialMove + " from outside");
 	this.bestScore = best;
-	this.bestMove= potentialMove;
-	System.out.println("MCTS done");
+	//System.out.println(best + " this is the best score with move " + potentialMove);
+	//this.bestMove= potentialMove;
+	//System.out.println("MCTS done");
 	}
-	 private static void printTree(Node node, String appender) {
-		  //System.out.println(appender + node.getPosition());
-		  for (Node each : node.getChildren()) {
-		   printTree(each, appender + appender);
-		  }
-		 }
+
 	private double getUCB1(Node node) {
 		if(node.getVisits() ==0) {
-			return 1000000;
+			return 100000000;
 		}
 		int visits = node.getVisits();
 		int parentVisits = node.getParent().getVisits();
 		int score =node.getScore();
-		return score + 2*Math.sqrt((Math.log(parentVisits)/visits));
+		return score + Math.sqrt((Math.log(parentVisits)/visits));
 	}
 	
 	private Node getNextNode(Node parentNode) {
 		List<Node> children = parentNode.getChildren();
-		double score = 0;
-		Node nextNode = null;
+		double score = children.get(0).getScore();
+		Node nextNode = children.get(0);
 		//System.out.println(children);
 		//looping through nodes and will return the position of the node(acting as unique identifier for the node)
 		for(Node child: children) {
 			double UCB1 = getUCB1(child);
-			//System.out.println(UCB1);
-			//System.out.println(child.getVisits());
+			
+			//System.out.println("visits: "+child.getVisits()+" UCB1: "+ getUCB1(child)+ " for node: "+child.getPosition() + " score: " + child.getScore());
 			if(UCB1>score) {
 				score = UCB1;
 				nextNode = child;
@@ -151,9 +166,10 @@ public class MCTS implements Runnable{
 		GameBoard expandBoard = new GameBoard(board);
 		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
 		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition().subList(0, 2));
+		ArrayList<Integer> arrowPos = new ArrayList<>(nodeToMove.getPosition().subList(2, 4));
 		ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 		//this is clone of original board - moving queen from current pos to next theoretical position
-		expandBoard.updateBoard(queenPosCur, queenPosMove);
+		expandBoard.updateBoard(queenPosCur, queenPosMove,arrowPos);
 		//getting all moves from that new position
 		ArrayList<ArrayList<Integer>> queenMoves = expandBoard.getMoves(expandBoard.getBoard(), queenPosMove);
 		
@@ -164,9 +180,11 @@ public class MCTS implements Runnable{
 			
 			ArrayList<ArrayList<Integer>> arrowShots = board.getMoves(board.getBoard(), queenMove);
 			//handle arrowshot where queen WAS here as getMoves is overloaded for both and we don't want queen to stay still
-			arrowShots.add(queenMove);
+			arrowShots.add(queenPosCur);
 			for(ArrayList<Integer> arrowShot: arrowShots) {
+				//cant shoot an arrow where the queen wants to move
 				if(!queenMove.equals(arrowShot)) {
+				//builds a list of both the queenMove and arrowShot
 				List<Integer> move = Stream.of(queenMove,arrowShot)
 						.flatMap(x -> x.stream())
 						.collect(Collectors.toList());
@@ -174,7 +192,6 @@ public class MCTS implements Runnable{
 				}
 			}
 		}
-		
 		
 		
 		for(ArrayList<Integer> move: moves) {
@@ -194,35 +211,89 @@ public class MCTS implements Runnable{
 		child.updateVists();
 		
 	}
-	private int rollout(GameBoard board,Node nodeToMove, Node treeRootNode) {
-		GameBoard rolloutBoard = new GameBoard(board);
+	private int rollout(GameBoard board,Node nodeToMove, Node treeRootNode,boolean isWhite) {
 		
-		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0, 2));
-		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition().subList(0, 2));
-		//try rolling out only using one player to move
-	
-		ArrayList<Integer>nextQueenPos;
-		BoardTile[][] currentBoard = rolloutBoard.getBoard();
-		//updating the board so the select queen is now moved to the current node not the root
-		rolloutBoard.updateBoard(queenPosCur,queenPosMove);
-		//zero moves have been made
-		int count = 0;
-		ArrayList<ArrayList<Integer>> nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
-		while(nextMove.size()!=0) {
-			
-			//int rand = (int)Math.random() * nextMove.size();
+		
+		List<Queen> theirQueens = new ArrayList<>();
+		
+		if(isWhite) {
+			theirQueens = board.getBQueens();
+		}else {
+			theirQueens = board.getWQueens();
+		}
+		int win =0;
+		
+		for(int i = 0;i<10;i++) {
+		GameBoard rolloutBoard = new GameBoard(board);
+		//get our first move
+		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0,2));
+		ArrayList<Integer> queenPosCur = new ArrayList<>(treeRootNode.getPosition());
+		ArrayList<Integer> arrowPos = new ArrayList<>(nodeToMove.getPosition().subList(2, 4));
+		//update rolloutBoard with our move
+		rolloutBoard.updateBoard(queenPosCur, queenPosMove, arrowPos);
+		queenPosCur = queenPosMove;
+		ArrayList<ArrayList<Integer>> ourQueenMoves = rolloutBoard.getMoves(rolloutBoard.getBoard(), queenPosCur);
+		ArrayList<Integer> theirQueenPosCur =  theirQueens.get(0).getCurrentPos();
+		ArrayList<ArrayList<Integer>> theirQueenMoves = rolloutBoard.getMoves(rolloutBoard.getBoard(),theirQueenPosCur);
+		GameBoard simulationBoard = new GameBoard(rolloutBoard);
+		int count =0;
+		while(!ourQueenMoves.isEmpty() && !theirQueenMoves.isEmpty()) {
 			Random r = new Random();
-			int rand = r.nextInt(nextMove.size());
-			nextQueenPos = nextMove.get(rand);
-			//System.out.println(nextQueenPos.toString());
-			rolloutBoard.updateBoard(queenPosMove, nextQueenPos, queenPosMove);
-			queenPosMove = nextQueenPos;
+			if(count%2==0) {
+				//their move
+				ArrayList<Integer> theirNextQueenPos;
+				ArrayList<ArrayList<Integer>> theirNextArrowShots;
+				ArrayList<Integer> theirNextArrowPos;
+				
+				int randMove = r.nextInt(theirQueenMoves.size());
+				//getting random move from possible moves
+				theirNextQueenPos = theirQueenMoves.get(randMove);
+				//getting arrow shots calculated from next move
+				theirNextArrowShots = simulationBoard.getMoves(simulationBoard.getBoard(), theirNextQueenPos);
+				//adding queens current position as possible arrow shot
+				theirNextArrowShots.add(theirQueenPosCur);
+				int randArrow = r.nextInt(theirNextArrowShots.size());
+				//getting random arrow shot
+				theirNextArrowPos = theirNextArrowShots.get(randArrow);
+				//updating board moving their queen and making an arrow shot
+				simulationBoard.updateBoard(theirQueenPosCur, theirNextQueenPos, theirNextArrowPos);
+				//setting their current queen position to the moved position
+				theirQueenPosCur = theirNextQueenPos;
+				//generating moves from their current position
+				ourQueenMoves = simulationBoard.getMoves(simulationBoard.getBoard(), queenPosCur);
+			}else {
+				//our move
+				ArrayList<Integer> ourNextQueenPos;
+				ArrayList<ArrayList<Integer>> ourNextArrowShots;
+				ArrayList<Integer> ourNextArrowPos;
+				int randMove = r.nextInt(ourQueenMoves.size());
+				//getting random move from list of our possible moves
+				ourNextQueenPos = ourQueenMoves.get(randMove);
+				//getting possible arrow shots from new queen position
+				ourNextArrowShots = simulationBoard.getMoves(simulationBoard.getBoard(), ourNextQueenPos);
+				//adding current queen position as possible arrow shot
+				ourNextArrowShots.add(queenPosCur);
+				int randArrow = r.nextInt(ourNextArrowShots.size());
+				//picking random arrow shot
+				ourNextArrowPos = ourNextArrowShots.get(randArrow);
+				//updating simulation board with our move
+				simulationBoard.updateBoard(queenPosCur, ourNextQueenPos, ourNextArrowPos);
+				//setting queens current position to the latest move
+				queenPosCur = ourNextQueenPos;
+				//getting list of possible moves
+				theirQueenMoves = simulationBoard.getMoves(simulationBoard.getBoard(), theirQueenPosCur);
+				
+			}
+			
 			count++;
-			nextMove = rolloutBoard.getMoves(currentBoard, queenPosMove);
+		}
+		if(ourQueenMoves.isEmpty())
+			win++;
+		
 		}
 		
-		//System.out.println(count);
-		return count;
+		
+		return win;
 		
 			
 			
@@ -240,6 +311,10 @@ public class MCTS implements Runnable{
 	public ArrayList<Integer> getMove()
 	{
 		return bestMove;
+	}
+	
+	private void setBestMove(ArrayList<Integer> bestMove) {
+		this.bestMove = bestMove;
 	}
 	
 	public int getScore()

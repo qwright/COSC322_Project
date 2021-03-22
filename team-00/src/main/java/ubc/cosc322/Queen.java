@@ -50,6 +50,35 @@ public class Queen {
 	{
 		return isWhite;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((currentPos == null) ? 0 : currentPos.hashCode());
+		result = prime * result + id;
+		result = prime * result + (isWhite ? 1231 : 1237);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Queen other = (Queen) obj;
+		if (currentPos == null) {
+			if (other.currentPos != null)
+				return false;
+		} else if (!currentPos.equals(other.currentPos))
+			return false;
+		if (id != other.id)
+			return false;
+		if (isWhite != other.isWhite)
+			return false;
+		return true;
+	}
 	
 	//returns a list of current tiles that the queen may move to given the current board state
 	//Possible moves are calculated from queens current position and if there is a queen or arrow in the path

@@ -52,7 +52,7 @@ public class Agent extends GamePlayer{
 			e.printStackTrace();
 		}
 		*/
-		this.gameClient.joinRoom("Lambly Lake");
+		this.gameClient.joinRoom("Kentucky Lake");
 		
 	}
 	
@@ -122,7 +122,7 @@ public class Agent extends GamePlayer{
 		
 		//Generate threads for queens
 		for(Queen q : queens) {
-			MCTS monte = new MCTS(board,q);
+			MCTS monte = new MCTS(board,q,this.isWhite);
 			monteList.add(monte);
 			Thread thread = new Thread(monte);
 			threadsList.add(thread);
@@ -153,11 +153,16 @@ public class Agent extends GamePlayer{
 		}
 		if(nextMove == null) {
 			System.out.println("Game Over: OUT OF MOVES");
+		}else if(nextMove.size() !=4){
+			
+			System.out.println("Game Over: OUT OF MOVES");
 		}else {
 			ArrayList<Integer> qmove = new ArrayList<>(nextMove.subList(0, 2));
 			ArrayList<Integer> amove = new ArrayList<>(nextMove.subList(2, 4));
-			System.out.println(qcur);
+			System.out.println(qcur + "queen current");
 			System.out.println(nextMove);
+			System.out.println(qmove);
+			System.out.println(amove);
 			board.updateBoard(qcur, qmove, amove);
 			gameClient.sendMoveMessage(qcur, qmove,amove);
 		}
@@ -167,11 +172,12 @@ public class Agent extends GamePlayer{
 	 */
 	public synchronized void tryUpdateMoveSet(MCTS monte)
 	{
-		if(monte.getScore() >= score) {
+		if(monte.getScore() >= score && monte.getMove().size()==4) {
 			score = monte.getScore();
 			//System.out.println(score);
 			currentQueen = monte.getQueen();
 			nextMove = monte.getMove();
+			System.out.println(nextMove);
 			System.out.println("Move updated");
 		}
 	}
