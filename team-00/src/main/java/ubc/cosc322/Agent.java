@@ -24,7 +24,7 @@ public class Agent extends GamePlayer{
 	
 	private Queen currentQueen = null;
 	private ArrayList<Integer> nextMove = null;
-	private int score = 0;
+	private double score = 0;
 	
 	String ourAmazon;
 	String otherAmazon;
@@ -78,6 +78,7 @@ public class Agent extends GamePlayer{
     	    			this.isWhite = true;
     	    			board.setAIColor(true);
     	    			queens = setTeam(board);
+
     	    		} else {
     	    			System.out.println("The AI is black");
     	    			this.isWhite = false;

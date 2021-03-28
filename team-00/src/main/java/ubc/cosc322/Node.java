@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-	int score;
+	double score;
 	int visits;
 	int rootVisit; //dont know if this can be a global variable
 	private ArrayList<Integer> nodePosition = new ArrayList<>();
@@ -28,11 +28,11 @@ public class Node {
 	public int getVisits() {
 		return visits;
 	}
-	public int getScore() {
+	public double getScore() {
 		return score;
 	}
 	
-	public void updateScore(int score) {
+	public void updateScore(double score) {
 		this.score += score;
 	}
 	
@@ -47,6 +47,13 @@ public class Node {
 	
 	public ArrayList<Integer> getPosition(){
 		return nodePosition;
+	}
+	
+	public void printTree() {
+		List<Node> children = this.getChildren();
+		for(Node child: children) {
+			System.out.println(child + " score: "+child.getScore() + " visits: " + child.getVisits());
+		}
 	}
 	
 	

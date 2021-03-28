@@ -11,7 +11,7 @@ import java.util.Random;
 //
 public class MCTS implements Runnable{
 
-	int bestScore;
+	double bestScore;
 	ArrayList<Integer> bestMove = new ArrayList<Integer>();
 	GameBoard b;
 	Queen q;
@@ -43,7 +43,7 @@ public class MCTS implements Runnable{
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
 	
-	while(System.currentTimeMillis()-startTime<2000) {
+	while(System.currentTimeMillis()-startTime<15000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
@@ -85,7 +85,7 @@ public class MCTS implements Runnable{
 			}
 			else if(current.getVisits()==0) {
 				//System.out.println("doing rollout");
-				int score = rollout(board,current,treeRootNode,isWhite);
+				double score = rollout(board,current,treeRootNode,isWhite);
 				backpropegate(current,score);
 				current = treeRootNode;
 				//System.out.println("Here");
@@ -105,7 +105,7 @@ public class MCTS implements Runnable{
 	}
 	//System.out.println("Tree root node:" + treeRootNode.getScore());
 	ArrayList<Integer> potentialMove;
-	int best =0;
+	double best =0;
 	for(Node child: treeRootNode.getChildren()) {
 		potentialMove = child.getPosition();
 		//address unknown bug where position doesn't contain full move information
@@ -122,10 +122,11 @@ public class MCTS implements Runnable{
 		}
 			
 	}
+	treeRootNode.printTree();
 	//printTree(treeRootNode," ");
 	//System.out.println(potentialMove + " from outside");
 	this.bestScore = best;
-	//System.out.println(best + " this is the best score with move " + potentialMove);
+	System.out.println(best + " this is the best score with move " + this.bestMove);
 	//this.bestMove= potentialMove;
 	//System.out.println("MCTS done");
 	}
@@ -136,8 +137,8 @@ public class MCTS implements Runnable{
 		}
 		int visits = node.getVisits();
 		int parentVisits = node.getParent().getVisits();
-		int score =node.getScore();
-		return score + Math.sqrt((Math.log(parentVisits)/visits));
+		double score =node.getScore();
+		return score + 3*Math.sqrt((Math.log(parentVisits)/visits));
 	}
 	
 	private Node getNextNode(Node parentNode) {
@@ -199,7 +200,7 @@ public class MCTS implements Runnable{
 		}
 	}
 	
-	private void backpropegate(Node child,int score) {
+	private void backpropegate(Node child,double score) {
 		
 		while(child.getParent()!= null) {
 			child.updateVists();
@@ -211,7 +212,7 @@ public class MCTS implements Runnable{
 		child.updateVists();
 		
 	}
-	private int rollout(GameBoard board,Node nodeToMove, Node treeRootNode,boolean isWhite) {
+	private double rollout(GameBoard board,Node nodeToMove, Node treeRootNode,boolean isWhite) {
 		
 		
 		List<Queen> theirQueens = new ArrayList<>();
@@ -221,9 +222,9 @@ public class MCTS implements Runnable{
 		}else {
 			theirQueens = board.getWQueens();
 		}
-		int win =0;
+		double win_lose =0;
 		
-		for(int i = 0;i<10;i++) {
+		for(int i = 0;i<200;i++) {
 		GameBoard rolloutBoard = new GameBoard(board);
 		//get our first move
 		ArrayList<Integer> queenPosMove = new ArrayList<>(nodeToMove.getPosition().subList(0,2));
@@ -287,13 +288,13 @@ public class MCTS implements Runnable{
 			
 			count++;
 		}
-		if(ourQueenMoves.isEmpty())
-			win++;
+		if(theirQueenMoves.isEmpty())
+			win_lose++;
 		
 		}
 		
 		
-		return win;
+		return win_lose/200;
 		
 			
 			
@@ -317,7 +318,7 @@ public class MCTS implements Runnable{
 		this.bestMove = bestMove;
 	}
 	
-	public int getScore()
+	public double getScore()
 	{
 		return bestScore;
 	}
