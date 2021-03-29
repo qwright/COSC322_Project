@@ -53,7 +53,7 @@ public class Agent extends GamePlayer{
 			e.printStackTrace();
 		}
 		*/
-		this.gameClient.joinRoom("Kentucky Lake");
+		this.gameClient.joinRoom("Lambly Lake");
 		
 	}
 	
@@ -180,18 +180,19 @@ public class Agent extends GamePlayer{
 			GameBoard fakeBoard = new GameBoard(board);
 			fakeBoard.updateBoard(monte.getQueen().getCurrentPos(),new ArrayList<Integer>(monte.getMove().subList(0, 2)) ,new ArrayList<Integer>(monte.getMove().subList(2, 4)));
 			moves = fakeBoard.getMoves(fakeBoard.getBoard(), new ArrayList<Integer>(monte.getMove().subList(0, 2)));
+			System.out.println("Avail moves:" +  moves.size());
+			if(moves.size() >= maxMoves) {
+				maxMoves = moves.size();
+				score = monte.getScore();
+				//System.out.println(score);
+				currentQueen = monte.getQueen();
+				nextMove = monte.getMove();
+				System.out.println(nextMove);
+				System.out.println("Move updated");
+			}
 		}
 		
-		System.out.println("Avail moves:" +  moves.size());
-		if(moves.size() >= maxMoves) {
-			maxMoves = moves.size();
-			score = monte.getScore();
-			//System.out.println(score);
-			currentQueen = monte.getQueen();
-			nextMove = monte.getMove();
-			System.out.println(nextMove);
-			System.out.println("Move updated");
-		}
+		
 	}
 	
 	private List<Queen> setTeam(GameBoard board)

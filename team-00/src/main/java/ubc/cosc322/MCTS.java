@@ -43,7 +43,7 @@ public class MCTS implements Runnable{
 	Node current = treeRootNode;
 	long startTime = System.currentTimeMillis();
 	
-	while(System.currentTimeMillis()-startTime<4000) {
+	while(System.currentTimeMillis()-startTime<25000) {
 		//System.out.println(current.getPosition());
 		//System.out.println("checking isLeaf");
 		
