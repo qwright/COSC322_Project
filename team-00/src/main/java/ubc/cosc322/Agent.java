@@ -25,6 +25,7 @@ public class Agent extends GamePlayer{
 	private Queen currentQueen = null;
 	private ArrayList<Integer> nextMove = null;
 	private double score = 0;
+	private int maxMoves = 0;
 	
 	String ourAmazon;
 	String otherAmazon;
@@ -166,14 +167,24 @@ public class Agent extends GamePlayer{
 			System.out.println(amove);
 			board.updateBoard(qcur, qmove, amove);
 			gameClient.sendMoveMessage(qcur, qmove,amove);
+			maxMoves = 0;
 		}
 	}
 	/*
 	 * Threads shouldn't be able to access this but in case of any funny business its thread safe. 
 	 */
 	public synchronized void tryUpdateMoveSet(MCTS monte)
-	{
-		if(monte.getScore() >= score && monte.getMove().size()==4) {
+	{	
+		ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
+		if(monte.getMove().size()==4) {
+			GameBoard fakeBoard = new GameBoard(board);
+			fakeBoard.updateBoard(monte.getQueen().getCurrentPos(),new ArrayList<Integer>(monte.getMove().subList(0, 2)) ,new ArrayList<Integer>(monte.getMove().subList(2, 4)));
+			moves = fakeBoard.getMoves(fakeBoard.getBoard(), new ArrayList<Integer>(monte.getMove().subList(0, 2)));
+		}
+		
+		System.out.println("Avail moves:" +  moves.size());
+		if(moves.size() >= maxMoves) {
+			maxMoves = moves.size();
 			score = monte.getScore();
 			//System.out.println(score);
 			currentQueen = monte.getQueen();
